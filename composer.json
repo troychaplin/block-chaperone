@@ -1,0 +1,23 @@
+{
+	"name": "troychaplin/block-policy",
+	"description": "Control which blocks are available in the editor.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"autoload": {
+		"classmap": [
+			"classes/"
+		]
+	},
+	"require-dev": {
+		"wp-coding-standards/wpcs": "^3.4.1"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"scripts": {
+		"format": "phpcbf",
+		"lint": "phpcs"
+	}
+}
