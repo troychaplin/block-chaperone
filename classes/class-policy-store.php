@@ -17,14 +17,16 @@ namespace BlockPolicy;
  *         'blocks' => array(
  *             'core/quote' => array( 'hidden' => true ),
  *             'core/verse' => array( 'hidden' => true, 'unregistered' => true ),
- *             'core/cover' => array( 'postTypes' => array( 'post' ) ),
+ *             'core/cover' => array( 'hidden' => true, 'postTypes' => array( 'post' ) ),
  *             'core/html'  => array( 'hidden' => true, 'roles' => array( 'editor', 'author' ) ),
  *         ),
  *     )
  *
- * `roles` limits who a block's restrictions apply to. Missing or empty means
- * everyone; otherwise only users with at least one of the listed roles are
- * restricted, and everyone else can use the block normally.
+ * A rule's restrictions are `hidden` (not in the inserter) and `unregistered`
+ * (removed from the editor; implies hidden). `postTypes` and `roles` scope
+ * them: where and to whom they apply. Missing or empty means all post types /
+ * everyone; otherwise only those post types / users with at least one of the
+ * listed roles are restricted.
  *
  * Rules for blocks, post types or roles that aren't currently registered are
  * kept, so deactivating and reactivating a plugin doesn't lose its policy.
@@ -73,8 +75,10 @@ class Policy_Store {
 	 * - Drops invalid block names and protected blocks.
 	 * - Casts flags to bool; `unregistered` implies `hidden`.
 	 * - Dedupes post type and role slugs.
-	 * - Drops rules that are all defaults, so only real overrides are stored.
-	 *   `roles` alone isn't a restriction, so it's dropped without one.
+	 * - Drops rules with no restriction: `postTypes` and `roles` only scope
+	 *   `hidden` / `unregistered`, so on their own they mean nothing.
+	 * - Legacy shape: a rule with `postTypes` but no restriction used to mean
+	 *   "hidden in these post types", so it's read as `hidden` + `postTypes`.
 	 *
 	 * @param array $policy Raw policy.
 	 *
@@ -93,25 +97,25 @@ class Policy_Store {
 
 			$clean = array();
 
+			$post_types   = $this->sanitize_slugs( $rule['postTypes'] ?? null );
 			$unregistered = ! empty( $rule['unregistered'] );
-			$hidden       = $unregistered || ! empty( $rule['hidden'] );
+			$hidden       = $unregistered || ! empty( $rule['hidden'] )
+				// Legacy: post types alone meant "hidden in these post types".
+				|| ( $post_types && ! array_key_exists( 'hidden', $rule ) );
 
-			if ( $hidden ) {
-				$clean['hidden'] = true;
+			// Post types and roles only scope restrictions; without one there's nothing to store.
+			if ( ! $hidden ) {
+				continue;
 			}
+
+			$clean['hidden'] = true;
 
 			if ( $unregistered ) {
 				$clean['unregistered'] = true;
 			}
 
-			$post_types = $this->sanitize_slugs( $rule['postTypes'] ?? null );
 			if ( $post_types ) {
 				$clean['postTypes'] = $post_types;
-			}
-
-			// Roles only scope restrictions, so a rule with nothing else is dropped.
-			if ( ! $clean ) {
-				continue;
 			}
 
 			$roles = $this->sanitize_slugs( $rule['roles'] ?? null );
@@ -148,51 +152,77 @@ class Policy_Store {
 	}
 
 	/**
-	 * Blocks hidden from the inserter everywhere (includes unregistered blocks).
+	 * Blocks hidden from the inserter in every context for the current user:
+	 * hidden (or unregistered) with no post type scope.
 	 *
 	 * @return string[]
 	 */
-	public function hidden_blocks(): array {
-		return $this->blocks_where( static fn( $rule ) => ! empty( $rule['hidden'] ) );
+	public function hidden_everywhere(): array {
+		return $this->blocks_where( static fn( $rule ) => ! empty( $rule['hidden'] ) && empty( $rule['postTypes'] ) );
 	}
 
 	/**
-	 * Blocks unregistered from the editor.
-	 *
-	 * @return string[]
-	 */
-	public function unregistered_blocks(): array {
-		return $this->blocks_where( static fn( $rule ) => ! empty( $rule['unregistered'] ) );
-	}
-
-	/**
-	 * Blocks restricted (hidden from the inserter) in a given post type.
+	 * Blocks hidden from the inserter when editing a given post type.
 	 *
 	 * @param string $post_type Post type slug.
 	 *
 	 * @return string[]
 	 */
-	public function restricted_for( string $post_type ): array {
+	public function hidden_in( string $post_type ): array {
 		return $this->blocks_where(
-			static fn( $rule ) => in_array( $post_type, $rule['postTypes'] ?? array(), true )
+			static fn( $rule ) => ! empty( $rule['hidden'] ) && self::scope_includes( $rule, $post_type )
 		);
 	}
 
 	/**
-	 * Post type restrictions grouped by post type: post type => block names.
+	 * Blocks to unregister on an editor screen.
+	 *
+	 * @param string|null $post_type Post type being edited, or null where the
+	 *                               screen isn't tied to one (Site Editor,
+	 *                               widgets): then only unscoped rules apply.
+	 *
+	 * @return string[]
+	 */
+	public function unregistered_in( ?string $post_type ): array {
+		return $this->blocks_where(
+			static fn( $rule ) => ! empty( $rule['unregistered'] )
+				&& ( null === $post_type ? empty( $rule['postTypes'] ) : self::scope_includes( $rule, $post_type ) )
+		);
+	}
+
+	/**
+	 * Post-type-scoped rules grouped by post type: post type => block names.
+	 * Includes scoped unregistered blocks, which the Site Editor hides instead
+	 * (it switches post types without reloading, so it can't unregister per
+	 * post type).
 	 *
 	 * @return array<string, string[]>
 	 */
-	public function restrictions_by_post_type(): array {
+	public function scoped_hidden_by_post_type(): array {
 		$by_post_type = array();
 
 		foreach ( $this->rules_for_current_user() as $block_name => $rule ) {
+			if ( empty( $rule['hidden'] ) ) {
+				continue;
+			}
 			foreach ( $rule['postTypes'] ?? array() as $post_type ) {
 				$by_post_type[ $post_type ][] = $block_name;
 			}
 		}
 
 		return $by_post_type;
+	}
+
+	/**
+	 * Whether a rule's post type scope covers a post type. No scope means all.
+	 *
+	 * @param array  $rule      Sanitized rule.
+	 * @param string $post_type Post type slug.
+	 *
+	 * @return bool
+	 */
+	private static function scope_includes( array $rule, string $post_type ): bool {
+		return empty( $rule['postTypes'] ) || in_array( $post_type, $rule['postTypes'], true );
 	}
 
 	/**
@@ -219,9 +249,9 @@ class Policy_Store {
 		 *
 		 *     @type array $blocks Rules keyed by block name. Each rule may set
 		 *                         `hidden` (bool), `unregistered` (bool),
-		 *                         `postTypes` (string[], hidden in those types)
-		 *                         and `roles` (string[], who the rule applies
-		 *                         to; empty means everyone).
+		 *                         `postTypes` (string[], where those apply; empty
+		 *                         means all) and `roles` (string[], who they
+		 *                         apply to; empty means everyone).
 		 * }
 		 */
 		$filtered = apply_filters( 'blockpolicy_settings', $saved );

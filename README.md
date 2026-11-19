@@ -8,10 +8,12 @@ Go to **Settings → BlockPolicy** to see every top-level block registered on th
 
 | Option | What it does |
 |--------|--------------|
-| **Hide from inserter** | The block can't be inserted anywhere. Existing instances keep rendering and can still be edited. |
+| **Hide from inserter** | The block can't be inserted. Existing instances keep rendering and can still be edited. |
 | **Unregister** | The block is removed from the editor entirely. This also hides it. |
-| **Post types** | The block is hidden from the inserter only in the post types you pick. |
-| **Roles** | Who the block's restrictions apply to. **All roles** by default; pick roles to restrict only those users, and everyone else can use the block normally. |
+| **Post types** | Where those restrictions apply. **All post types** by default; pick post types to restrict the block only there. |
+| **Roles** | Who those restrictions apply to. **All roles** by default; pick roles to restrict only those users, and everyone else can use the block normally. |
+
+Post types and roles read **No restrictions** until Hide or Unregister is turned on for that block.
 
 The table can be searched and filtered by **status**, **category** and **source** (WordPress, or the plugin or theme that registered the block). Bulk actions let you hide, show, unregister, re-register or reset many blocks at once.
 
@@ -20,8 +22,8 @@ The table can be searched and filtered by **status**, **category** and **source*
 - **Only top-level blocks are listed.** Blocks that declare a `parent` or `ancestor` (such as `core/list-item` or `core/column`) follow their parent: they stay available while the parent is allowed, and are removed when every parent is hidden.
 - **Hiding** uses the `allowed_block_types_all` filter. It runs late and only removes blocks, so a list already narrowed by a theme or another plugin is respected.
 - **Unregistering** happens in the editor with `unregisterBlockType()`. The editor script only loads when there's something for it to do, and it also catches blocks registered after the page loads.
-- **Post type rules** apply in the post editor through the same filter. The Site Editor doesn't tell the filter which post is being edited, so there the editor script narrows the allowed list whenever a restricted post type (such as a page) is open, and restores it for templates.
-- **Roles** scope a block's restrictions: they apply to users with at least one of the chosen roles. With no roles chosen they apply to everyone, including logged-out requests. The Roles option is only available once a block has a restriction. Users with no role on the site, such as a multisite super admin who isn't a member, only get restrictions set to all roles.
+- **Post types** scope a block's restrictions. In the post editor, PHP applies them for the post type being edited: scoped blocks are left out of the inserter, and scoped Unregister rules are passed to the editor script for that screen only. The Site Editor doesn't tell the filter which post is being edited, so there the editor script narrows the allowed list whenever a scoped post type (such as a page) is open, and restores it for templates. A post-type-scoped Unregister acts as Hide in the Site Editor, because it switches between post types without reloading.
+- **Roles** scope a block's restrictions: they apply to users with at least one of the chosen roles. With no roles chosen they apply to everyone, including logged-out requests. Users with no role on the site, such as a multisite super admin who isn't a member, only get restrictions set to all roles.
 - **`core/paragraph` is protected.** It's the default block, so it can't be hidden, unregistered or restricted.
 - **The policy is a deny-list.** Only changed blocks are stored, so blocks from newly activated plugins are allowed by default. Rules for blocks or post types that aren't currently registered are kept, so deactivating a plugin doesn't erase its rules.
 
@@ -36,9 +38,11 @@ add_filter( 'blockpolicy_settings', function ( array $policy ): array {
 	// Always unregister the Verse block.
 	$policy['blocks']['core/verse'] = array( 'unregistered' => true );
 
-	// Hide Cover in posts, keeping any post types set in the UI.
-	$post_types = $policy['blocks']['core/cover']['postTypes'] ?? array();
-	$policy['blocks']['core/cover']['postTypes'] = array_unique( array_merge( $post_types, array( 'post' ) ) );
+	// Hide Cover, but only in posts.
+	$policy['blocks']['core/cover'] = array(
+		'hidden'    => true,
+		'postTypes' => array( 'post' ),
+	);
 
 	// Hide the Custom HTML block for everyone except administrators.
 	$policy['blocks']['core/html'] = array(
@@ -61,7 +65,7 @@ The settings page shows and saves only the stored policy. Rules added by this fi
 	"blocks": {
 		"core/quote": { "hidden": true },
 		"core/verse": { "hidden": true, "unregistered": true },
-		"core/cover": { "postTypes": ["post"] },
+		"core/cover": { "hidden": true, "postTypes": ["post"] },
 		"core/html": { "hidden": true, "roles": ["editor", "author"] }
 	}
 }
@@ -73,7 +77,7 @@ All routes require the `manage_options` capability.
 
 | Route | Method | Returns |
 |-------|--------|---------|
-| `/wp-json/blockpolicy/v1/blocks` | GET | `{ blocks, postTypes, roles }`: the top-level block catalog, the post types a block can be restricted in, and the site's user roles. |
+| `/wp-json/blockpolicy/v1/blocks` | GET | `{ blocks, postTypes, roles }`: the top-level block catalog, and the post types and user roles a block's restrictions can be limited to. |
 | `/wp-json/blockpolicy/v1/settings` | GET | The stored policy. |
 | `/wp-json/blockpolicy/v1/settings` | POST | Replaces the stored policy and returns the sanitized result. |
 

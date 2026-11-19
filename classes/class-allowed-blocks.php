@@ -85,23 +85,23 @@ class Allowed_Blocks {
 	/**
 	 * Blocks denied in this editor context.
 	 *
-	 * Post type restrictions only apply when a post is being edited; the Site
-	 * Editor has no post, so only hidden blocks apply there.
+	 * When a post is being edited, rules scoped to its post type apply as well
+	 * as unscoped ones. The Site Editor gives no post, so only unscoped rules
+	 * apply here; the editor script applies scoped ones when the Site Editor
+	 * opens a post or page.
 	 *
 	 * @param WP_Block_Editor_Context|mixed $block_editor_context Current editor context.
 	 *
 	 * @return string[]
 	 */
 	private function denied_blocks( $block_editor_context ): array {
-		$denied = $this->store->hidden_blocks();
-
 		$post = $block_editor_context instanceof WP_Block_Editor_Context ? $block_editor_context->post : null;
 
 		if ( $post && ! empty( $post->post_type ) ) {
-			$denied = array_merge( $denied, $this->store->restricted_for( $post->post_type ) );
+			return $this->store->hidden_in( $post->post_type );
 		}
 
-		return array_values( array_unique( $denied ) );
+		return $this->store->hidden_everywhere();
 	}
 
 	/**

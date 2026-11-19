@@ -11,7 +11,6 @@ import type { BlockRow, PolicyStatus, RulePatch, SlugOption } from './types';
 
 export const STATUS_LABELS: Record<PolicyStatus, string> = {
 	allowed: __('Allowed', 'blockpolicy'),
-	restricted: __('Restricted', 'blockpolicy'),
 	hidden: __('Hidden', 'blockpolicy'),
 	unregistered: __('Unregistered', 'blockpolicy'),
 };
@@ -49,7 +48,7 @@ function uniqueElements(
  *
  * @param args           Field inputs.
  * @param args.rows      Table rows (for filter options).
- * @param args.postTypes Post types a block can be restricted in.
+ * @param args.postTypes Post types a block's restrictions can be limited to.
  * @param args.roles     User roles a block's restrictions can be limited to.
  * @param args.onChange  Called when a row's policy is edited.
  * @return Field definitions.
@@ -171,12 +170,12 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 					blockTitle={item.title}
 					value={item.postTypes}
 					options={postTypes}
-					// Post type rules don't matter while the block is hidden everywhere.
-					disabled={item.protected || item.hidden}
+					// Post types only scope restrictions, so there's nothing to scope until one is set.
+					disabled={item.protected || item.status === 'allowed'}
 					disabledLabel={
 						item.protected
 							? __('Always allowed', 'blockpolicy')
-							: __('Hidden everywhere', 'blockpolicy')
+							: __('No restrictions', 'blockpolicy')
 					}
 					onChange={value => onChange(item.id, { postTypes: value })}
 				/>

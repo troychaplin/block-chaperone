@@ -31,7 +31,10 @@ export interface Catalog {
 	roles: SlugOption[];
 }
 
-/** A stored rule. Missing keys mean the default (allowed). */
+/**
+ * A stored rule. `hidden` / `unregistered` are the restrictions; `postTypes`
+ * and `roles` scope where and to whom they apply (missing or empty = all).
+ */
 export interface BlockRule {
 	hidden?: boolean;
 	unregistered?: boolean;
@@ -45,7 +48,7 @@ export interface PolicySettings {
 	blocks: Record<string, BlockRule>;
 }
 
-export type PolicyStatus = 'allowed' | 'restricted' | 'hidden' | 'unregistered';
+export type PolicyStatus = 'allowed' | 'hidden' | 'unregistered';
 
 /** The editable part of a row. */
 export interface RulePatch {

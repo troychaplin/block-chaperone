@@ -19,11 +19,11 @@ Prefix the change with one of these keywords:
 ### Added
 
 -   Settings → BlockPolicy screen: a DataViews table of every top-level block, with search, status / category / source filters and bulk actions.
--   Per-block "Hide from inserter", "Unregister" and post type restriction options.
--   Per-block Roles option to limit a block's restrictions to selected user roles (all roles by default).
+-   Per-block "Hide from inserter" and "Unregister" options.
+-   Per-block Post types and Roles options to limit those restrictions to selected post types and user roles (all by default).
 -   `allowed_block_types_all` enforcement that keeps children of allowed parents and respects lists set by themes or other plugins.
 -   Editor script that unregisters blocks, including blocks registered after page load.
--   Post type restrictions in the Site Editor when it edits a page or post.
+-   Post type scopes in the Site Editor when it edits a page or post.
 -   `blockpolicy_settings` filter for adding or overriding rules in code.
 -   REST routes `blockpolicy/v1/blocks` and `blockpolicy/v1/settings`.
 -   Uninstall removes the `blockpolicy_settings` option (all sites on multisite).

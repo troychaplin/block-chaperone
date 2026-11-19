@@ -51,18 +51,23 @@ class Enqueues {
 	/**
 	 * Enqueue the block editor script with the data it needs:
 	 *
-	 * - `unregistered`: blocks to unregister (every editor).
+	 * - `unregistered`: blocks to unregister on this screen. In the post editor
+	 *   that includes rules scoped to the post type being edited; elsewhere
+	 *   (Site Editor, widgets) only unscoped rules.
 	 * - `restricted`: post type => blocks to hide, Site Editor only. The Site
 	 *   Editor gives `allowed_block_types_all` no post, so PHP can't apply post
-	 *   type restrictions there; the script applies them when the Site Editor
-	 *   switches to editing a post or page.
+	 *   type scopes there; the script applies them when the Site Editor
+	 *   switches to editing a post or page. Scoped unregister rules are hidden
+	 *   there instead, since it can't unregister per post type without a reload.
 	 *
 	 * Skipped entirely when there's nothing for the script to do.
 	 */
 	public function enqueue_editor_assets(): void {
+		$site_editor = $this->is_site_editor();
+
 		$data = array(
-			'unregistered' => $this->store->unregistered_blocks(),
-			'restricted'   => $this->is_site_editor() ? $this->store->restrictions_by_post_type() : array(),
+			'unregistered' => $this->store->unregistered_in( $site_editor ? null : $this->screen_post_type() ),
+			'restricted'   => $site_editor ? $this->store->scoped_hidden_by_post_type() : array(),
 		);
 
 		if ( ! $data['unregistered'] && ! $data['restricted'] ) {
@@ -87,6 +92,17 @@ class Enqueues {
 			'window.blockPolicy = ' . wp_json_encode( $data ) . ';',
 			'before'
 		);
+	}
+
+	/**
+	 * Post type of the current editor screen, or null if it isn't a post editor.
+	 *
+	 * @return string|null
+	 */
+	private function screen_post_type(): ?string {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		return ( $screen && 'post' === $screen->base && $screen->post_type ) ? $screen->post_type : null;
 	}
 
 	/**

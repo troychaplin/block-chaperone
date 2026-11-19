@@ -6,7 +6,7 @@ import { CheckboxDropdown } from './checkbox-dropdown';
 interface PostTypeSelectProps {
 	/** Block title, used to give the control an accessible name. */
 	blockTitle: string;
-	/** Post types the block is restricted (hidden from the inserter) in. */
+	/** Post types the block's restrictions apply in; empty means all. */
 	value: string[];
 	options: SlugOption[];
 	disabled?: boolean;
@@ -16,7 +16,7 @@ interface PostTypeSelectProps {
 }
 
 /**
- * Choose the post types a block is hidden from the inserter in.
+ * Choose which post types a block's restrictions apply in.
  *
  * @param props            Component props.
  * @param props.blockTitle Block title for the accessible name.
@@ -27,10 +27,10 @@ export function PostTypeSelect({ blockTitle, ...props }: PostTypeSelectProps) {
 			{...props}
 			label={sprintf(
 				/* translators: %s: block title. */
-				__('Post type restrictions for %s', 'blockpolicy'),
+				__('Post types restricted for %s', 'blockpolicy'),
 				blockTitle
 			)}
-			legend={__('Hide from the inserter in', 'blockpolicy')}
+			legend={__('Apply restrictions in', 'blockpolicy')}
 			emptyLabel={__('All post types', 'blockpolicy')}
 			countLabel={count =>
 				sprintf(

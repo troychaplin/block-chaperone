@@ -12,22 +12,20 @@ import type {
 } from '../types';
 
 /**
- * Most restrictive state wins: unregistered > hidden > restricted > allowed.
+ * Most restrictive state wins: unregistered > hidden > allowed. Post types and
+ * roles only scope these, so they don't change the status.
  *
  * @param rule Editable state of a row.
  * @return The row's status.
  */
 export function deriveStatus(
-	rule: Pick<Required<RulePatch>, 'hidden' | 'unregistered' | 'postTypes'>
+	rule: Pick<Required<RulePatch>, 'hidden' | 'unregistered'>
 ): PolicyStatus {
 	if (rule.unregistered) {
 		return 'unregistered';
 	}
 	if (rule.hidden) {
 		return 'hidden';
-	}
-	if (rule.postTypes.length > 0) {
-		return 'restricted';
 	}
 	return 'allowed';
 }
@@ -143,25 +141,25 @@ export function rowsToSettings(
 			continue;
 		}
 
-		const rule: BlockRule = {};
-
-		if (row.hidden) {
-			rule.hidden = true;
+		// Post types and roles only scope a restriction, so a block with
+		// neither toggle on has nothing to store.
+		if (!row.hidden && !row.unregistered) {
+			continue;
 		}
+
+		const rule: BlockRule = { hidden: true };
+
 		if (row.unregistered) {
 			rule.unregistered = true;
 		}
 		if (row.postTypes.length > 0) {
 			rule.postTypes = row.postTypes;
 		}
-
-		// Roles only scope restrictions, so they're saved only alongside one.
-		if (Object.keys(rule).length > 0) {
-			if (row.roles.length > 0) {
-				rule.roles = row.roles;
-			}
-			blocks[row.name] = rule;
+		if (row.roles.length > 0) {
+			rule.roles = row.roles;
 		}
+
+		blocks[row.name] = rule;
 	}
 
 	return { blocks };
