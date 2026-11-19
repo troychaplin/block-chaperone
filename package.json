@@ -1,7 +1,7 @@
 {
-	"name": "block-policy",
+	"name": "blockpolicy",
 	"version": "0.1.0",
-	"description": "Control which blocks are available in the editor.",
+	"description": "BlockPolicy – Restrict Blocks by Role & Post Type.",
 	"author": "Troy Chaplin",
 	"license": "GPL-2.0-or-later",
 	"scripts": {

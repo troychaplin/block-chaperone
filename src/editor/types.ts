@@ -1,5 +1,5 @@
 /**
- * Data printed by `Block_Policy\Enqueues` as `window.blockPolicy`.
+ * Data printed by `BlockPolicy\Enqueues` as `window.blockPolicy`.
  */
 export interface EditorPolicyData {
 	/** Blocks to unregister. */

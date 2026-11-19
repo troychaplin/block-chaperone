@@ -1,6 +1,6 @@
 {
-	"name": "troychaplin/block-policy",
-	"description": "Control which blocks are available in the editor.",
+	"name": "troychaplin/blockpolicy",
+	"description": "BlockPolicy – Restrict Blocks by Role & Post Type.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
 	"autoload": {

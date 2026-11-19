@@ -130,7 +130,7 @@ export function collectOrphanRules(
  *
  * @param rows    Table rows.
  * @param orphans Rules for blocks not in the table, from collectOrphanRules().
- * @return Settings for POST /block-policy/v1/settings.
+ * @return Settings for POST /blockpolicy/v1/settings.
  */
 export function rowsToSettings(
 	rows: BlockRow[],

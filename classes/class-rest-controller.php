@@ -2,10 +2,10 @@
 /**
  * REST API for the settings page.
  *
- * @package Block_Policy
+ * @package BlockPolicy
  */
 
-namespace Block_Policy;
+namespace BlockPolicy;
 
 use WP_Error;
 use WP_REST_Request;
@@ -15,16 +15,16 @@ use WP_REST_Server;
 /**
  * Routes:
  *
- * - GET  /block-policy/v1/blocks    Block catalog, editor post types and user roles.
- * - GET  /block-policy/v1/settings  Saved policy.
- * - POST /block-policy/v1/settings  Replace the saved policy; returns the sanitized result.
+ * - GET  /blockpolicy/v1/blocks    Block catalog, editor post types and user roles.
+ * - GET  /blockpolicy/v1/settings  Saved policy.
+ * - POST /blockpolicy/v1/settings  Replace the saved policy; returns the sanitized result.
  */
 class Rest_Controller {
 
 	/**
 	 * REST namespace.
 	 */
-	public const REST_NAMESPACE = 'block-policy/v1';
+	public const REST_NAMESPACE = 'blockpolicy/v1';
 
 	/**
 	 * Block catalog.
@@ -102,7 +102,7 @@ class Rest_Controller {
 
 		return new WP_Error(
 			'rest_forbidden',
-			__( 'You do not have permission to manage block policies.', 'block-policy' ),
+			__( 'You do not have permission to manage block policies.', 'blockpolicy' ),
 			array( 'status' => rest_authorization_required_code() )
 		);
 	}
@@ -143,8 +143,8 @@ class Rest_Controller {
 
 		if ( ! is_array( $policy ) ) {
 			return new WP_Error(
-				'block_policy_invalid_settings',
-				__( 'Settings must be a JSON object.', 'block-policy' ),
+				'blockpolicy_invalid_settings',
+				__( 'Settings must be a JSON object.', 'blockpolicy' ),
 				array( 'status' => 400 )
 			);
 		}

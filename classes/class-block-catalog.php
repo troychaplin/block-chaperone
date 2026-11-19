@@ -2,10 +2,10 @@
 /**
  * Catalog of blocks that a policy can be applied to.
  *
- * @package Block_Policy
+ * @package BlockPolicy
  */
 
-namespace Block_Policy;
+namespace BlockPolicy;
 
 use WP_Block_Editor_Context;
 use WP_Block_Type;
@@ -103,7 +103,7 @@ class Block_Catalog {
 				'title'         => $block_type->title ? $block_type->title : $name,
 				'description'   => (string) $block_type->description,
 				'category'      => $category,
-				'categoryLabel' => $category_labels[ $category ] ?? ( '' !== $category ? $category : __( 'Uncategorized', 'block-policy' ) ),
+				'categoryLabel' => $category_labels[ $category ] ?? ( '' !== $category ? $category : __( 'Uncategorized', 'blockpolicy' ) ),
 				'source'        => $source['label'],
 				'sourceType'    => $source['type'],
 				'icon'          => is_string( $block_type->icon ) ? $block_type->icon : null,

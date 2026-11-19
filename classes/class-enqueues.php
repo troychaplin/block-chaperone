@@ -2,10 +2,10 @@
 /**
  * Asset enqueue logic.
  *
- * @package Block_Policy
+ * @package BlockPolicy
  */
 
-namespace Block_Policy;
+namespace BlockPolicy;
 
 /**
  * Enqueues the editor script and the settings page app.
@@ -83,7 +83,7 @@ class Enqueues {
 		$data['restricted'] = (object) $data['restricted'];
 
 		wp_add_inline_script(
-			'block-policy-editor',
+			'blockpolicy-editor',
 			'window.blockPolicy = ' . wp_json_encode( $data ) . ';',
 			'before'
 		);
@@ -128,7 +128,7 @@ class Enqueues {
 			return false;
 		}
 
-		$handle = 'block-policy-' . $entry;
+		$handle = 'blockpolicy-' . $entry;
 
 		wp_enqueue_script(
 			$handle,
@@ -138,7 +138,7 @@ class Enqueues {
 			true
 		);
 
-		wp_set_script_translations( $handle, 'block-policy' );
+		wp_set_script_translations( $handle, 'blockpolicy' );
 
 		if ( file_exists( $this->build_dir->get_path( $entry . '.css' ) ) ) {
 			wp_enqueue_style(

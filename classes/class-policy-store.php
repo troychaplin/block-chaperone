@@ -2,13 +2,13 @@
 /**
  * Persistence for the block policy.
  *
- * @package Block_Policy
+ * @package BlockPolicy
  */
 
-namespace Block_Policy;
+namespace BlockPolicy;
 
 /**
- * Reads, sanitizes and saves the `block_policy_settings` option.
+ * Reads, sanitizes and saves the `blockpolicy_settings` option.
  *
  * The option is a deny-list: only blocks that differ from the default
  * (allowed everywhere) are stored.
@@ -34,7 +34,7 @@ class Policy_Store {
 	/**
 	 * Option name.
 	 */
-	public const OPTION = 'block_policy_settings';
+	public const OPTION = 'blockpolicy_settings';
 
 	/**
 	 * Valid block name: namespace/name, lowercase alphanumerics and dashes.
@@ -197,7 +197,7 @@ class Policy_Store {
 
 	/**
 	 * The policy that is actually enforced: the saved policy, passed through
-	 * the `block_policy_settings` filter so code can add to or override it.
+	 * the `blockpolicy_settings` filter so code can add to or override it.
 	 *
 	 * The settings page reads and writes get()/save() directly, so rules added
 	 * by the filter are enforced but never shown in, or saved from, the UI.
@@ -224,7 +224,7 @@ class Policy_Store {
 		 *                         to; empty means everyone).
 		 * }
 		 */
-		$filtered = apply_filters( 'block_policy_settings', $saved );
+		$filtered = apply_filters( 'blockpolicy_settings', $saved );
 
 		return is_array( $filtered ) ? $this->sanitize( $filtered ) : $saved;
 	}

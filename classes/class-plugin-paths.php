@@ -2,17 +2,17 @@
 /**
  * Resolve paths and URLs relative to plugin directories.
  *
- * @package Block_Policy
+ * @package BlockPolicy
  */
 
-namespace Block_Policy;
+namespace BlockPolicy;
 
 /**
  * Class Plugin_Paths
  *
  * This class provides methods to handle and retrieve various paths related to the plugin.
  *
- * @package Block_Policy
+ * @package BlockPolicy
  */
 class Plugin_Paths {
 

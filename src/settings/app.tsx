@@ -1,5 +1,5 @@
 /**
- * Block Policy settings app.
+ * BlockPolicy settings app.
  */
 import apiFetch from '@wordpress/api-fetch';
 import { Button, Notice, Spinner } from '@wordpress/components';
@@ -18,8 +18,8 @@ import {
 	rowsToSettings,
 } from './utils/transform';
 
-const BLOCKS_PATH = '/block-policy/v1/blocks';
-const SETTINGS_PATH = '/block-policy/v1/settings';
+const BLOCKS_PATH = '/blockpolicy/v1/blocks';
+const SETTINGS_PATH = '/blockpolicy/v1/settings';
 
 const DEFAULT_VIEW: View = {
 	type: 'table',
@@ -89,7 +89,7 @@ export function App() {
 			} catch (error) {
 				setNotice({
 					status: 'error',
-					message: errorMessage(error, __('Failed to load blocks.', 'block-policy')),
+					message: errorMessage(error, __('Failed to load blocks.', 'blockpolicy')),
 				});
 			} finally {
 				setIsLoading(false);
@@ -138,12 +138,12 @@ export function App() {
 			setIsDirty(false);
 			setNotice({
 				status: 'success',
-				message: __('Settings saved.', 'block-policy'),
+				message: __('Settings saved.', 'blockpolicy'),
 			});
 		} catch (error) {
 			setNotice({
 				status: 'error',
-				message: errorMessage(error, __('Failed to save settings.', 'block-policy')),
+				message: errorMessage(error, __('Failed to save settings.', 'blockpolicy')),
 			});
 		} finally {
 			setIsSaving(false);
@@ -161,35 +161,35 @@ export function App() {
 		return [
 			{
 				id: 'hide',
-				label: __('Hide from inserter', 'block-policy'),
+				label: __('Hide from inserter', 'blockpolicy'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && !item.hidden,
 				callback: items => updateRows(ids(items), { hidden: true }),
 			},
 			{
 				id: 'show',
-				label: __('Show in inserter', 'block-policy'),
+				label: __('Show in inserter', 'blockpolicy'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && item.hidden && !item.unregistered,
 				callback: items => updateRows(ids(items), { hidden: false }),
 			},
 			{
 				id: 'unregister',
-				label: __('Unregister', 'block-policy'),
+				label: __('Unregister', 'blockpolicy'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && !item.unregistered,
 				callback: items => updateRows(ids(items), { unregistered: true }),
 			},
 			{
 				id: 'register',
-				label: __('Re-register', 'block-policy'),
+				label: __('Re-register', 'blockpolicy'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && item.unregistered,
 				callback: items => updateRows(ids(items), { unregistered: false }),
 			},
 			{
 				id: 'reset',
-				label: __('Reset to default', 'block-policy'),
+				label: __('Reset to default', 'blockpolicy'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && item.status !== 'allowed',
 				callback: items =>
@@ -212,26 +212,28 @@ export function App() {
 
 	if (isLoading) {
 		return (
-			<div className="block-policy-page block-policy-page--loading">
+			<div className="blockpolicy-page blockpolicy-page--loading">
 				<Spinner />
-				<span className="screen-reader-text">{__('Loading blocks…', 'block-policy')}</span>
+				<span className="screen-reader-text">{__('Loading blocks…', 'blockpolicy')}</span>
 			</div>
 		);
 	}
 
 	return (
-		<div className="block-policy-page">
-			<div className="block-policy-page__header">
+		<div className="blockpolicy-page">
+			<div className="blockpolicy-page__header">
 				<div>
-					<h1>{__('Block Policy', 'block-policy')}</h1>
-					<p className="block-policy-page__summary">
+					<h1>
+						{__('BlockPolicy — Restrict Blocks by Role & Post Type', 'blockpolicy')}
+					</h1>
+					<p className="blockpolicy-page__summary">
 						{sprintf(
 							/* translators: 1: number of blocks with a policy, 2: total blocks. */
 							_n(
 								'%1$d of %2$d block has a policy.',
 								'%1$d of %2$d blocks have a policy.',
 								rows.length,
-								'block-policy'
+								'blockpolicy'
 							),
 							changedCount,
 							rows.length
@@ -246,7 +248,7 @@ export function App() {
 					disabled={!isDirty || isSaving}
 					accessibleWhenDisabled
 				>
-					{__('Save Changes', 'block-policy')}
+					{__('Save Changes', 'blockpolicy')}
 				</Button>
 			</div>
 
@@ -258,7 +260,7 @@ export function App() {
 
 			{rows.length === 0 ? (
 				<Notice status="warning" isDismissible={false}>
-					{__('No blocks found.', 'block-policy')}
+					{__('No blocks found.', 'blockpolicy')}
 				</Notice>
 			) : (
 				<DataViews

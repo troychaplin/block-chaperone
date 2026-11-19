@@ -1,10 +1,10 @@
-=== Block Policy ===
+=== BlockPolicy – Restrict Blocks by Role & Post Type ===
 
 Contributors: areziaal
 Tags: blocks, gutenberg, block editor, allowed blocks, inserter
 Requires at least: 6.6
 Requires PHP: 8.0
-Tested up to: 7.0
+Tested up to: 7.2
 Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,7 +13,7 @@ Control which blocks are available in the editor, block by block: hide them, unr
 
 == Description ==
 
-Block Policy adds a settings screen that lists every top-level block on your site — core blocks and blocks from plugins and themes — with three options per block:
+BlockPolicy adds a settings screen that lists every top-level block on your site — core blocks and blocks from plugins and themes — with three options per block:
 
 * **Hide from inserter** — the block can't be added anywhere, but existing content keeps working.
 * **Unregister** — the block is removed from the editor entirely.
@@ -27,17 +27,17 @@ Search the list, filter it by status, category or source plugin, and change many
 * Child blocks (like List items or Columns) follow their parent automatically, so they don't clutter the list.
 * New blocks from newly activated plugins are allowed by default. Only the blocks you change are stored.
 * The Paragraph block is protected, because the editor depends on it.
-* If your theme or another plugin already limits the available blocks, Block Policy only removes from that list. It never adds blocks back.
+* If your theme or another plugin already limits the available blocks, BlockPolicy only removes from that list. It never adds blocks back.
 
 = For developers =
 
-Use the `block_policy_settings` filter to add or override rules in code. A REST API at `block-policy/v1` powers the settings screen. See the README on GitHub for details.
+Use the `blockpolicy_settings` filter to add or override rules in code. A REST API at `blockpolicy/v1` powers the settings screen. See the README on GitHub for details.
 
 == Installation ==
 
 1. Upload the plugin to `/wp-content/plugins/` or install it from the Plugins screen.
 2. Activate it.
-3. Go to Settings → Block Policy.
+3. Go to Settings → BlockPolicy.
 
 == Frequently Asked Questions ==
 
@@ -60,4 +60,4 @@ Only top-level blocks that can be inserted are listed. Blocks registered only in
 == Changelog ==
 
 = 0.1.0 =
-* Initial release: settings screen with per-block hide, unregister, post type and role restrictions; category, source and status filters; bulk actions; `block_policy_settings` filter.
+* Initial release: settings screen with per-block hide, unregister, post type and role restrictions; category, source and status filters; bulk actions; `blockpolicy_settings` filter.

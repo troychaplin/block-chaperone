@@ -2,7 +2,7 @@
  * Block editor script.
  *
  * Only enqueued when there is something to do. Data comes from
- * `window.blockPolicy`, printed by `Block_Policy\Enqueues`. Hiding blocks from
+ * `window.blockPolicy`, printed by `BlockPolicy\Enqueues`. Hiding blocks from
  * the inserter is otherwise handled in PHP via `allowed_block_types_all`.
  */
 import domReady from '@wordpress/dom-ready';

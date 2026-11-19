@@ -8,7 +8,7 @@
 // its layout container is the element that scrolls. The table header is
 // `position: sticky` within that container; if the window scrolled instead,
 // the header would scroll away with the page.
-.block-policy-page {
+.blockpolicy-page {
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
@@ -59,14 +59,14 @@
 	}
 }
 
-.block-policy-description-cell {
+.blockpolicy-description-cell {
 	display: block;
 	max-width: 380px;
 	white-space: normal;
 	overflow-wrap: anywhere;
 }
 
-.block-policy-status {
+.blockpolicy-status {
 	display: inline-block;
 	padding: 2px 8px;
 	border-radius: 2px;
@@ -92,7 +92,7 @@
 	}
 }
 
-.block-policy-checkbox-dropdown {
+.blockpolicy-checkbox-dropdown {
 
 	.components-button {
 		white-space: nowrap;

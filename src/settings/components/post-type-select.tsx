@@ -27,22 +27,22 @@ export function PostTypeSelect({ blockTitle, ...props }: PostTypeSelectProps) {
 			{...props}
 			label={sprintf(
 				/* translators: %s: block title. */
-				__('Post type restrictions for %s', 'block-policy'),
+				__('Post type restrictions for %s', 'blockpolicy'),
 				blockTitle
 			)}
-			legend={__('Hide from the inserter in', 'block-policy')}
-			emptyLabel={__('All post types', 'block-policy')}
+			legend={__('Hide from the inserter in', 'blockpolicy')}
+			emptyLabel={__('All post types', 'blockpolicy')}
 			countLabel={count =>
 				sprintf(
 					/* translators: %d: number of post types. */
-					_n('%d post type', '%d post types', count, 'block-policy'),
+					_n('%d post type', '%d post types', count, 'blockpolicy'),
 					count
 				)
 			}
 			unknownNote={slugs =>
 				sprintf(
 					/* translators: %s: comma-separated post type slugs. */
-					__('Also saved for unregistered post types: %s', 'block-policy'),
+					__('Also saved for unregistered post types: %s', 'blockpolicy'),
 					slugs
 				)
 			}

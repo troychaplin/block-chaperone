@@ -10,10 +10,10 @@ import { RoleSelect } from './components/role-select';
 import type { BlockRow, PolicyStatus, RulePatch, SlugOption } from './types';
 
 export const STATUS_LABELS: Record<PolicyStatus, string> = {
-	allowed: __('Allowed', 'block-policy'),
-	restricted: __('Restricted', 'block-policy'),
-	hidden: __('Hidden', 'block-policy'),
-	unregistered: __('Unregistered', 'block-policy'),
+	allowed: __('Allowed', 'blockpolicy'),
+	restricted: __('Restricted', 'blockpolicy'),
+	hidden: __('Hidden', 'blockpolicy'),
+	unregistered: __('Unregistered', 'blockpolicy'),
 };
 
 interface FieldArgs {
@@ -59,7 +59,7 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 		{
 			// The row's title (the view's `titleField`): the block name, e.g. core/quote.
 			id: 'name',
-			label: __('Block', 'block-policy'),
+			label: __('Block', 'blockpolicy'),
 			enableGlobalSearch: true,
 			enableSorting: true,
 			// The name carries the row's identity; hiding it would leave nothing to identify the block.
@@ -69,25 +69,25 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 		{
 			// Shown under the name (the view's `descriptionField`).
 			id: 'description',
-			label: __('Description', 'block-policy'),
+			label: __('Description', 'blockpolicy'),
 			enableGlobalSearch: true,
 			enableSorting: false,
 			filterBy: false,
 			render: ({ item }) => (
-				<span className="block-policy-description-cell">{item.description}</span>
+				<span className="blockpolicy-description-cell">{item.description}</span>
 			),
 		},
 		{
 			// Not shown by default, but searchable, so "Quote" still finds core/quote.
 			id: 'title',
-			label: __('Title', 'block-policy'),
+			label: __('Title', 'blockpolicy'),
 			enableGlobalSearch: true,
 			enableSorting: true,
 			filterBy: false,
 		},
 		{
 			id: 'status',
-			label: __('Status', 'block-policy'),
+			label: __('Status', 'blockpolicy'),
 			enableSorting: true,
 			elements: (Object.keys(STATUS_LABELS) as PolicyStatus[]).map(status => ({
 				value: status,
@@ -95,14 +95,14 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 			})),
 			filterBy: { isPrimary: true, operators: ['isAny', 'isNone'] },
 			render: ({ item }) => (
-				<span className={`block-policy-status is-${item.status}`}>
+				<span className={`blockpolicy-status is-${item.status}`}>
 					{STATUS_LABELS[item.status]}
 				</span>
 			),
 		},
 		{
 			id: 'category',
-			label: __('Category', 'block-policy'),
+			label: __('Category', 'blockpolicy'),
 			enableSorting: true,
 			elements: uniqueElements(
 				rows,
@@ -114,7 +114,7 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 		},
 		{
 			id: 'source',
-			label: __('Source', 'block-policy'),
+			label: __('Source', 'blockpolicy'),
 			enableSorting: true,
 			enableGlobalSearch: true,
 			elements: uniqueElements(
@@ -126,14 +126,14 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 		},
 		{
 			id: 'hidden',
-			label: __('Hide from inserter', 'block-policy'),
+			label: __('Hide from inserter', 'blockpolicy'),
 			enableSorting: false,
 			filterBy: false,
 			render: ({ item }) => (
 				<PolicyToggle
 					label={sprintf(
 						/* translators: %s: block title. */
-						__('Hide %s from the inserter', 'block-policy'),
+						__('Hide %s from the inserter', 'blockpolicy'),
 						item.title
 					)}
 					checked={item.hidden}
@@ -145,14 +145,14 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 		},
 		{
 			id: 'unregistered',
-			label: __('Unregister', 'block-policy'),
+			label: __('Unregister', 'blockpolicy'),
 			enableSorting: false,
 			filterBy: false,
 			render: ({ item }) => (
 				<PolicyToggle
 					label={sprintf(
 						/* translators: %s: block title. */
-						__('Unregister %s', 'block-policy'),
+						__('Unregister %s', 'blockpolicy'),
 						item.title
 					)}
 					checked={item.unregistered}
@@ -163,7 +163,7 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 		},
 		{
 			id: 'postTypes',
-			label: __('Post types', 'block-policy'),
+			label: __('Post types', 'blockpolicy'),
 			enableSorting: false,
 			filterBy: false,
 			render: ({ item }) => (
@@ -175,8 +175,8 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 					disabled={item.protected || item.hidden}
 					disabledLabel={
 						item.protected
-							? __('Always allowed', 'block-policy')
-							: __('Hidden everywhere', 'block-policy')
+							? __('Always allowed', 'blockpolicy')
+							: __('Hidden everywhere', 'blockpolicy')
 					}
 					onChange={value => onChange(item.id, { postTypes: value })}
 				/>
@@ -184,7 +184,7 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 		},
 		{
 			id: 'roles',
-			label: __('Roles', 'block-policy'),
+			label: __('Roles', 'blockpolicy'),
 			enableSorting: false,
 			filterBy: false,
 			render: ({ item }) => (
@@ -196,8 +196,8 @@ export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Fiel
 					disabled={item.protected || item.status === 'allowed'}
 					disabledLabel={
 						item.protected
-							? __('Always allowed', 'block-policy')
-							: __('No restrictions', 'block-policy')
+							? __('Always allowed', 'blockpolicy')
+							: __('No restrictions', 'blockpolicy')
 					}
 					onChange={value => onChange(item.id, { roles: value })}
 				/>
