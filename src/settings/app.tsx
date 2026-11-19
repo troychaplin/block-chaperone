@@ -9,14 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 
 import { getFields } from './fields';
-import type {
-	BlockRow,
-	BlockRule,
-	Catalog,
-	PolicySettings,
-	PostTypeOption,
-	RulePatch,
-} from './types';
+import type { BlockRow, BlockRule, Catalog, PolicySettings, SlugOption, RulePatch } from './types';
 import {
 	applyPatch,
 	catalogToRows,
@@ -37,7 +30,7 @@ const DEFAULT_VIEW: View = {
 	sort: { field: 'name', direction: 'asc' },
 	titleField: 'name',
 	descriptionField: 'description',
-	fields: ['status', 'category', 'source', 'hidden', 'unregistered', 'postTypes'],
+	fields: ['status', 'category', 'source', 'hidden', 'unregistered', 'postTypes', 'roles'],
 };
 
 interface NoticeState {
@@ -69,7 +62,8 @@ export function App() {
 	// while rows are edited. Rebuilding them on every edit would remount every
 	// cell and close any open post type dropdown after a single click.
 	const [initialRows, setInitialRows] = useState<BlockRow[]>([]);
-	const [postTypes, setPostTypes] = useState<PostTypeOption[]>([]);
+	const [postTypes, setPostTypes] = useState<SlugOption[]>([]);
+	const [roles, setRoles] = useState<SlugOption[]>([]);
 	// Saved rules for blocks the table doesn't list (e.g. from a deactivated
 	// plugin). Sent back on every save so the full-replace POST keeps them.
 	const [orphanRules, setOrphanRules] = useState<Record<string, BlockRule>>({});
@@ -90,6 +84,7 @@ export function App() {
 				setRows(loadedRows);
 				setInitialRows(loadedRows);
 				setPostTypes(catalog.postTypes);
+				setRoles(catalog.roles ?? []);
 				setOrphanRules(collectOrphanRules(catalog, settings));
 			} catch (error) {
 				setNotice({
@@ -156,8 +151,8 @@ export function App() {
 	}, [rows, orphanRules]);
 
 	const fields = useMemo(
-		() => getFields({ rows: initialRows, postTypes, onChange: handleChange }),
-		[initialRows, postTypes, handleChange]
+		() => getFields({ rows: initialRows, postTypes, roles, onChange: handleChange }),
+		[initialRows, postTypes, roles, handleChange]
 	);
 
 	const actions = useMemo<Action<BlockRow>[]>(() => {
@@ -198,7 +193,12 @@ export function App() {
 				supportsBulk: true,
 				isEligible: item => !item.protected && item.status !== 'allowed',
 				callback: items =>
-					updateRows(ids(items), { hidden: false, unregistered: false, postTypes: [] }),
+					updateRows(ids(items), {
+						hidden: false,
+						unregistered: false,
+						postTypes: [],
+						roles: [],
+					}),
 			},
 		];
 	}, [updateRows]);

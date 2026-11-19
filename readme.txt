@@ -9,7 +9,7 @@ Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Control which blocks are available in the editor, block by block: hide them from the inserter, unregister them, or restrict them by post type.
+Control which blocks are available in the editor, block by block: hide them, unregister them, or restrict them by post type and user role.
 
 == Description ==
 
@@ -18,6 +18,7 @@ Block Policy adds a settings screen that lists every top-level block on your sit
 * **Hide from inserter** — the block can't be added anywhere, but existing content keeps working.
 * **Unregister** — the block is removed from the editor entirely.
 * **Post types** — hide the block from the inserter only in the post types you choose.
+* **Roles** — choose who those restrictions apply to. By default they apply to everyone; pick roles to restrict only those users, for example hide Custom HTML from Editors and Authors while Administrators keep it.
 
 Search the list, filter it by status, category or source plugin, and change many blocks at once with bulk actions.
 
@@ -59,4 +60,4 @@ Only top-level blocks that can be inserted are listed. Blocks registered only in
 == Changelog ==
 
 = 0.1.0 =
-* Initial release: settings screen with per-block hide, unregister and post type restrictions; category, source and status filters; bulk actions; `block_policy_settings` filter.
+* Initial release: settings screen with per-block hide, unregister, post type and role restrictions; category, source and status filters; bulk actions; `block_policy_settings` filter.

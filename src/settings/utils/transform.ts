@@ -17,7 +17,9 @@ import type {
  * @param rule Editable state of a row.
  * @return The row's status.
  */
-export function deriveStatus(rule: Required<RulePatch>): PolicyStatus {
+export function deriveStatus(
+	rule: Pick<Required<RulePatch>, 'hidden' | 'unregistered' | 'postTypes'>
+): PolicyStatus {
 	if (rule.unregistered) {
 		return 'unregistered';
 	}
@@ -43,6 +45,7 @@ function toRow(block: CatalogBlock, rule: BlockRule = {}): BlockRow {
 		// Unregistering a block always hides it too, so PHP and JS agree.
 		hidden: !!rule.unregistered || !!rule.hidden,
 		postTypes: rule.postTypes ?? [],
+		roles: rule.roles ?? [],
 	};
 
 	return {
@@ -80,6 +83,7 @@ export function applyPatch(row: BlockRow, patch: RulePatch): BlockRow {
 		hidden: patch.hidden ?? row.hidden,
 		unregistered: patch.unregistered ?? row.unregistered,
 		postTypes: patch.postTypes ?? row.postTypes,
+		roles: patch.roles ?? row.roles,
 	};
 
 	if (state.unregistered) {
@@ -151,7 +155,11 @@ export function rowsToSettings(
 			rule.postTypes = row.postTypes;
 		}
 
+		// Roles only scope restrictions, so they're saved only alongside one.
 		if (Object.keys(rule).length > 0) {
+			if (row.roles.length > 0) {
+				rule.roles = row.roles;
+			}
 			blocks[row.name] = rule;
 		}
 	}

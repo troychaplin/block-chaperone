@@ -20,6 +20,7 @@ Prefix the change with one of these keywords:
 
 -   Settings → Block Policy screen: a DataViews table of every top-level block, with search, status / category / source filters and bulk actions.
 -   Per-block "Hide from inserter", "Unregister" and post type restriction options.
+-   Per-block Roles option to limit a block's restrictions to selected user roles (all roles by default).
 -   `allowed_block_types_all` enforcement that keeps children of allowed parents and respects lists set by themes or other plugins.
 -   Editor script that unregisters blocks, including blocks registered after page load.
 -   Post type restrictions in the Site Editor when it edits a page or post.

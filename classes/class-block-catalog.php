@@ -147,6 +147,25 @@ class Block_Catalog {
 	}
 
 	/**
+	 * User roles a block's restrictions can be limited to, in the site's
+	 * role order (Administrator first).
+	 *
+	 * @return array<int, array{value: string, label: string}>
+	 */
+	public function get_roles(): array {
+		$roles = array();
+
+		foreach ( wp_roles()->get_names() as $slug => $name ) {
+			$roles[] = array(
+				'value' => $slug,
+				'label' => translate_user_role( $name ),
+			);
+		}
+
+		return $roles;
+	}
+
+	/**
 	 * Slugs of the post types returned by get_post_types().
 	 *
 	 * @return string[]

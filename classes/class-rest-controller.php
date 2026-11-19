@@ -15,7 +15,7 @@ use WP_REST_Server;
 /**
  * Routes:
  *
- * - GET  /block-policy/v1/blocks    Block catalog + editor post types.
+ * - GET  /block-policy/v1/blocks    Block catalog, editor post types and user roles.
  * - GET  /block-policy/v1/settings  Saved policy.
  * - POST /block-policy/v1/settings  Replace the saved policy; returns the sanitized result.
  */
@@ -117,6 +117,7 @@ class Rest_Controller {
 			array(
 				'blocks'    => $this->catalog->get_blocks(),
 				'postTypes' => $this->catalog->get_post_types(),
+				'roles'     => $this->catalog->get_roles(),
 			)
 		);
 	}

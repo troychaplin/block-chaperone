@@ -6,7 +6,8 @@ import { __, sprintf } from '@wordpress/i18n';
 
 import { PolicyToggle } from './components/policy-toggle';
 import { PostTypeSelect } from './components/post-type-select';
-import type { BlockRow, PolicyStatus, PostTypeOption, RulePatch } from './types';
+import { RoleSelect } from './components/role-select';
+import type { BlockRow, PolicyStatus, RulePatch, SlugOption } from './types';
 
 export const STATUS_LABELS: Record<PolicyStatus, string> = {
 	allowed: __('Allowed', 'block-policy'),
@@ -17,7 +18,8 @@ export const STATUS_LABELS: Record<PolicyStatus, string> = {
 
 interface FieldArgs {
 	rows: BlockRow[];
-	postTypes: PostTypeOption[];
+	postTypes: SlugOption[];
+	roles: SlugOption[];
 	onChange: (id: string, patch: RulePatch) => void;
 }
 
@@ -48,10 +50,11 @@ function uniqueElements(
  * @param args           Field inputs.
  * @param args.rows      Table rows (for filter options).
  * @param args.postTypes Post types a block can be restricted in.
+ * @param args.roles     User roles a block's restrictions can be limited to.
  * @param args.onChange  Called when a row's policy is edited.
  * @return Field definitions.
  */
-export function getFields({ rows, postTypes, onChange }: FieldArgs): Field<BlockRow>[] {
+export function getFields({ rows, postTypes, roles, onChange }: FieldArgs): Field<BlockRow>[] {
 	return [
 		{
 			// The row's title (the view's `titleField`): the block name, e.g. core/quote.
@@ -176,6 +179,27 @@ export function getFields({ rows, postTypes, onChange }: FieldArgs): Field<Block
 							: __('Hidden everywhere', 'block-policy')
 					}
 					onChange={value => onChange(item.id, { postTypes: value })}
+				/>
+			),
+		},
+		{
+			id: 'roles',
+			label: __('Roles', 'block-policy'),
+			enableSorting: false,
+			filterBy: false,
+			render: ({ item }) => (
+				<RoleSelect
+					blockTitle={item.title}
+					value={item.roles}
+					options={roles}
+					// Roles only scope restrictions, so there's nothing to scope until one is set.
+					disabled={item.protected || item.status === 'allowed'}
+					disabledLabel={
+						item.protected
+							? __('Always allowed', 'block-policy')
+							: __('No restrictions', 'block-policy')
+					}
+					onChange={value => onChange(item.id, { roles: value })}
 				/>
 			),
 		},
