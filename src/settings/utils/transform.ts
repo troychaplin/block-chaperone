@@ -85,7 +85,12 @@ export function applyPatch(row: BlockRow, patch: RulePatch): BlockRow {
 	};
 
 	if (state.unregistered) {
+		// Unregistering always hides the block too.
 		state.hidden = true;
+	} else if (row.unregistered && patch.unregistered === false) {
+		// Turning Unregister off clears the Hide it implied, returning the block
+		// to fully allowed (unless this same patch sets `hidden` explicitly).
+		state.hidden = patch.hidden ?? false;
 	}
 
 	return { ...row, ...state, status: deriveStatus(state) };

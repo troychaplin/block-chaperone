@@ -55,6 +55,17 @@ function errorMessage(error: unknown, fallback: string): string {
 	return fallback;
 }
 
+/**
+ * Comparable snapshot of what the rows would save.
+ *
+ * @param rows    Table rows.
+ * @param orphans Rules for blocks not in the table.
+ * @return Serialized policy.
+ */
+function policyKey(rows: BlockRow[], orphans: Record<string, BlockRule>): string {
+	return JSON.stringify(rowsToSettings(rows, orphans));
+}
+
 export function App() {
 	const [rows, setRows] = useState<BlockRow[]>([]);
 	// Rows as first loaded. Only used to build filter options (categories and
@@ -69,7 +80,10 @@ export function App() {
 	const [orphanRules, setOrphanRules] = useState<Record<string, BlockRule>>({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
-	const [isDirty, setIsDirty] = useState(false);
+	// Serialized policy as last loaded or saved. The page has unsaved changes
+	// only when the current rows would save something different, so undoing
+	// an edit clears the warning and disables Save again.
+	const [savedKey, setSavedKey] = useState('');
 	const [notice, setNotice] = useState<NoticeState | null>(null);
 	const [view, setView] = useState<View>(DEFAULT_VIEW);
 
@@ -85,7 +99,9 @@ export function App() {
 				setInitialRows(loadedRows);
 				setPostTypes(catalog.postTypes);
 				setRoles(catalog.roles ?? []);
-				setOrphanRules(collectOrphanRules(catalog, settings));
+				const orphans = collectOrphanRules(catalog, settings);
+				setOrphanRules(orphans);
+				setSavedKey(policyKey(loadedRows, orphans));
 			} catch (error) {
 				setNotice({
 					status: 'error',
@@ -97,6 +113,11 @@ export function App() {
 		}
 		fetchData();
 	}, []);
+
+	const isDirty = useMemo(
+		() => !isLoading && policyKey(rows, orphanRules) !== savedKey,
+		[isLoading, rows, orphanRules, savedKey]
+	);
 
 	// Warn before leaving with unsaved changes.
 	useEffect(() => {
@@ -114,7 +135,6 @@ export function App() {
 		setRows(prevRows =>
 			prevRows.map(row => (targets.has(row.id) ? applyPatch(row, patch) : row))
 		);
-		setIsDirty(true);
 	}, []);
 
 	const handleChange = useCallback(
@@ -134,8 +154,9 @@ export function App() {
 
 			// Re-derive from the server's sanitized echo rather than trusting
 			// local state, so anything PHP rejected shows up immediately.
-			setRows(prevRows => reapplySettings(prevRows, saved));
-			setIsDirty(false);
+			const savedRows = reapplySettings(rows, saved);
+			setRows(savedRows);
+			setSavedKey(policyKey(savedRows, orphanRules));
 			setNotice({
 				status: 'success',
 				message: __('Settings saved.', 'blockpolicy'),
