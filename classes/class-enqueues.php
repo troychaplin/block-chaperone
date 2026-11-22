@@ -49,53 +49,38 @@ class Enqueues {
 	}
 
 	/**
-	 * Enqueue the block editor script with the data it needs:
+	 * Enqueue the block editor script with the "unregistered" blocks for the
+	 * post type being edited, in the content editor only (the post editor).
+	 * The Site Editor, widgets editor and Customizer are left alone.
 	 *
-	 * - `unregistered`: blocks to unregister on this screen. In the post editor
-	 *   that includes rules scoped to the post type being edited; elsewhere
-	 *   (Site Editor, widgets) only unscoped rules.
-	 * - `restricted`: post type => blocks to hide, Site Editor only. The Site
-	 *   Editor gives `allowed_block_types_all` no post, so PHP can't apply post
-	 *   type scopes there; the script applies them when the Site Editor
-	 *   switches to editing a post or page. Scoped unregister rules are hidden
-	 *   there instead, since it can't unregister per post type without a reload.
+	 * The blocks aren't removed from the registry, since templates and the
+	 * Template preview share it; the script shows existing instances in post
+	 * content as a removable placeholder instead.
 	 *
-	 * Skipped entirely when there's nothing for the script to do.
+	 * Skipped entirely when there are no such blocks.
 	 */
 	public function enqueue_editor_assets(): void {
-		$site_editor = $this->is_site_editor();
+		$post_type = $this->screen_post_type();
 
-		$data = array(
-			'unregistered' => $this->store->unregistered_in( $site_editor ? null : $this->screen_post_type() ),
-			'restricted'   => $site_editor ? $this->store->scoped_hidden_by_post_type() : array(),
-		);
-
-		if ( ! $data['unregistered'] && ! $data['restricted'] ) {
+		if ( null === $post_type ) {
 			return;
 		}
 
-		if ( ! $this->enqueue_entry( 'editor' ) ) {
+		$unregistered = $this->store->unregistered_in( $post_type );
+
+		if ( ! $unregistered || ! $this->enqueue_entry( 'editor' ) ) {
 			return;
 		}
-
-		if ( $data['restricted'] ) {
-			// The Site Editor's own allowed list (hidden blocks already removed),
-			// which the script narrows per post type and restores afterwards.
-			$data['siteEditorAllowed'] = get_allowed_block_types( new \WP_Block_Editor_Context( array( 'name' => 'core/edit-site' ) ) );
-		}
-
-		// Cast so an empty map encodes as `{}`, not `[]`.
-		$data['restricted'] = (object) $data['restricted'];
 
 		wp_add_inline_script(
 			'blockpolicy-editor',
-			'window.blockPolicy = ' . wp_json_encode( $data ) . ';',
+			'window.blockPolicy = ' . wp_json_encode( array( 'unregistered' => $unregistered ) ) . ';',
 			'before'
 		);
 	}
 
 	/**
-	 * Post type of the current editor screen, or null if it isn't a post editor.
+	 * Post type of the current editor screen, or null if it isn't the post editor.
 	 *
 	 * @return string|null
 	 */
@@ -103,17 +88,6 @@ class Enqueues {
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 
 		return ( $screen && 'post' === $screen->base && $screen->post_type ) ? $screen->post_type : null;
-	}
-
-	/**
-	 * Whether the current admin screen is the Site Editor.
-	 *
-	 * @return bool
-	 */
-	private function is_site_editor(): bool {
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-
-		return $screen && 'site-editor' === $screen->id;
 	}
 
 	/**

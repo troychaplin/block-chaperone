@@ -152,16 +152,6 @@ class Policy_Store {
 	}
 
 	/**
-	 * Blocks hidden from the inserter in every context for the current user:
-	 * hidden (or unregistered) with no post type scope.
-	 *
-	 * @return string[]
-	 */
-	public function hidden_everywhere(): array {
-		return $this->blocks_where( static fn( $rule ) => ! empty( $rule['hidden'] ) && empty( $rule['postTypes'] ) );
-	}
-
-	/**
 	 * Blocks hidden from the inserter when editing a given post type.
 	 *
 	 * @param string $post_type Post type slug.
@@ -175,42 +165,16 @@ class Policy_Store {
 	}
 
 	/**
-	 * Blocks to unregister on an editor screen.
+	 * Blocks to unregister when editing a given post type.
 	 *
-	 * @param string|null $post_type Post type being edited, or null where the
-	 *                               screen isn't tied to one (Site Editor,
-	 *                               widgets): then only unscoped rules apply.
+	 * @param string $post_type Post type slug.
 	 *
 	 * @return string[]
 	 */
-	public function unregistered_in( ?string $post_type ): array {
+	public function unregistered_in( string $post_type ): array {
 		return $this->blocks_where(
-			static fn( $rule ) => ! empty( $rule['unregistered'] )
-				&& ( null === $post_type ? empty( $rule['postTypes'] ) : self::scope_includes( $rule, $post_type ) )
+			static fn( $rule ) => ! empty( $rule['unregistered'] ) && self::scope_includes( $rule, $post_type )
 		);
-	}
-
-	/**
-	 * Post-type-scoped rules grouped by post type: post type => block names.
-	 * Includes scoped unregistered blocks, which the Site Editor hides instead
-	 * (it switches post types without reloading, so it can't unregister per
-	 * post type).
-	 *
-	 * @return array<string, string[]>
-	 */
-	public function scoped_hidden_by_post_type(): array {
-		$by_post_type = array();
-
-		foreach ( $this->rules_for_current_user() as $block_name => $rule ) {
-			if ( empty( $rule['hidden'] ) ) {
-				continue;
-			}
-			foreach ( $rule['postTypes'] ?? array() as $post_type ) {
-				$by_post_type[ $post_type ][] = $block_name;
-			}
-		}
-
-		return $by_post_type;
 	}
 
 	/**

@@ -9,7 +9,7 @@ Go to **Settings → BlockPolicy** to see every top-level block registered on th
 | Option | What it does |
 |--------|--------------|
 | **Hide from inserter** | The block can't be inserted. Existing instances keep rendering and can still be edited. |
-| **Unregister** | The block is removed from the editor entirely. This also hides it. |
+| **Unregister** | The block can't be used in post content: it's hidden from the inserter, and existing instances show a removable “isn’t available” placeholder. Templates and previews still render it. |
 | **Post types** | Where those restrictions apply. **All post types** by default; pick post types to restrict the block only there. |
 | **Roles** | Who those restrictions apply to. **All roles** by default; pick roles to restrict only those users, and everyone else can use the block normally. |
 
@@ -20,9 +20,10 @@ The table can be searched and filtered by **status**, **category** and **source*
 ## How it works
 
 - **Only top-level blocks are listed.** Blocks that declare a `parent` or `ancestor` (such as `core/list-item` or `core/column`) follow their parent: they stay available while the parent is allowed, and are removed when every parent is hidden.
+- **Restrictions apply in the content editor only**: the post editor, where posts, pages and other post types are written. The Site Editor (templates, template parts, and pages opened from it), the widgets editor and the Customizer are left alone, so theme building isn't affected.
 - **Hiding** uses the `allowed_block_types_all` filter. It runs late and only removes blocks, so a list already narrowed by a theme or another plugin is respected.
-- **Unregistering** happens in the editor with `unregisterBlockType()`. The editor script only loads when there's something for it to do, and it also catches blocks registered after the page loads.
-- **Post types** scope a block's restrictions. In the post editor, PHP applies them for the post type being edited: scoped blocks are left out of the inserter, and scoped Unregister rules are passed to the editor script for that screen only. The Site Editor doesn't tell the filter which post is being edited, so there the editor script narrows the allowed list whenever a scoped post type (such as a page) is open, and restores it for templates. A post-type-scoped Unregister acts as Hide in the Site Editor, because it switches between post types without reloading.
+- **Unregister keeps the block registered.** Truly unregistering a block would remove it from the whole editor page, breaking templates that use it in the sidebar Template preview and with **Show template**. Instead, the post editor script replaces the block's editor with a placeholder wherever post content is edited: the whole canvas normally, or only inside the Post Content block with Show template on. Template parts and block previews render normally. The script only loads when the post type being edited has such blocks.
+- **Post types** scope a block's restrictions: PHP applies them for the post type open in the post editor, both for hiding and for the blocks the editor script shows as unavailable.
 - **Roles** scope a block's restrictions: they apply to users with at least one of the chosen roles. With no roles chosen they apply to everyone, including logged-out requests. Users with no role on the site, such as a multisite super admin who isn't a member, only get restrictions set to all roles.
 - **`core/paragraph` is protected.** It's the default block, so it can't be hidden, unregistered or restricted.
 - **The policy is a deny-list.** Only changed blocks are stored, so blocks from newly activated plugins are allowed by default. Rules for blocks or post types that aren't currently registered are kept, so deactivating a plugin doesn't erase its rules.
@@ -84,8 +85,8 @@ All routes require the `manage_options` capability.
 ## Known limitations
 
 - **JavaScript-only blocks.** Blocks registered only in JavaScript (no PHP or `block.json` registration) aren't listed. While any block is hidden, they're also left out of the inserter. Core blocks and almost all modern plugins register on the server.
-- **Unregistered blocks in existing content** appear in the editor as "unsupported block" placeholders.
-- **The front end is unaffected.** Unregistering only affects the editor; saved and dynamic blocks still render on the site.
+- **Unregistered blocks in existing content** show a placeholder in the editor and can't be edited, but their content is kept as-is and saved unchanged.
+- **The front end is unaffected.** Hide and Unregister only affect the editor; saved and dynamic blocks still render on the site.
 - **Missing categories.** Some plugins set a block's category only in JavaScript, so it shows as "Uncategorized" (e.g. Gravity Forms).
 
 ## Development
@@ -112,5 +113,5 @@ Local environment via [@wordpress/env](https://github.com/WordPress/gutenberg/tr
 | `classes/class-allowed-blocks.php` | `allowed_block_types_all` enforcement |
 | `classes/class-enqueues.php` | Editor and settings scripts |
 | `classes/class-settings-page.php` | Settings → BlockPolicy screen |
-| `src/editor/` | Editor script: unregisters blocks, and applies post type rules in the Site Editor |
+| `src/editor/` | Post editor script that shows unregistered blocks as a placeholder in post content |
 | `src/settings/` | DataViews settings app (TypeScript) |

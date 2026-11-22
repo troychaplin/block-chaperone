@@ -1,24 +1,17 @@
 /**
- * Block editor script.
+ * Block editor script for the post editor.
  *
- * Only enqueued when there is something to do. Data comes from
- * `window.blockPolicy`, printed by `BlockPolicy\Enqueues`. Hiding blocks from
- * the inserter is otherwise handled in PHP via `allowed_block_types_all`.
+ * Blocks listed in `window.blockPolicy.unregistered` stay registered (so
+ * templates and previews render normally) but show a removable placeholder
+ * wherever post content is edited. Hiding them from the inserter is handled
+ * in PHP via `allowed_block_types_all`. Only enqueued when the post type being
+ * edited has such blocks (see `BlockPolicy\Enqueues`).
  */
-import domReady from '@wordpress/dom-ready';
-
-import { applySiteEditorRestrictions } from './site-editor-restrictions';
+import { registerContentPlaceholder } from './content-placeholder';
 import './types';
-import { unregisterBlocks } from './unregister';
 
-const { unregistered = [], restricted = {}, siteEditorAllowed = true } = window.blockPolicy ?? {};
+const { unregistered = [] } = window.blockPolicy ?? {};
 
-domReady(() => {
-	if (unregistered.length > 0) {
-		unregisterBlocks(unregistered);
-	}
-
-	if (Object.keys(restricted).length > 0) {
-		applySiteEditorRestrictions(restricted, siteEditorAllowed);
-	}
-});
+if (unregistered.length > 0) {
+	registerContentPlaceholder(unregistered);
+}

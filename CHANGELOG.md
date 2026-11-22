@@ -22,8 +22,8 @@ Prefix the change with one of these keywords:
 -   Per-block "Hide from inserter" and "Unregister" options.
 -   Per-block Post types and Roles options to limit those restrictions to selected post types and user roles (all by default).
 -   `allowed_block_types_all` enforcement that keeps children of allowed parents and respects lists set by themes or other plugins.
--   Editor script that unregisters blocks, including blocks registered after page load.
--   Post type scopes in the Site Editor when it edits a page or post.
+-   Post editor script that shows unregistered blocks as a removable placeholder in post content, while templates and previews keep rendering them.
+-   Restrictions apply in the post editor only; the Site Editor, widgets editor and Customizer are left alone.
 -   `blockpolicy_settings` filter for adding or overriding rules in code.
 -   REST routes `blockpolicy/v1/blocks` and `blockpolicy/v1/settings`.
 -   Uninstall removes the `blockpolicy_settings` option (all sites on multisite).

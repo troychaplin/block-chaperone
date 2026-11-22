@@ -11,8 +11,8 @@ use WP_Block_Editor_Context;
 use WP_Block_Type_Registry;
 
 /**
- * Filters `allowed_block_types_all` to remove hidden blocks from the inserter,
- * plus blocks restricted in the post type being edited.
+ * Filters `allowed_block_types_all` to remove hidden blocks from the inserter
+ * in the content editor, for the post type being edited.
  *
  * Returning an explicit list drops anything not in it, so the list starts from
  * every registered block (or from another plugin's list, if one already
@@ -85,23 +85,26 @@ class Allowed_Blocks {
 	/**
 	 * Blocks denied in this editor context.
 	 *
-	 * When a post is being edited, rules scoped to its post type apply as well
-	 * as unscoped ones. The Site Editor gives no post, so only unscoped rules
-	 * apply here; the editor script applies scoped ones when the Site Editor
-	 * opens a post or page.
+	 * Restrictions only apply in the content editor (the post editor), for the
+	 * post type being edited. The Site Editor, widgets editor and Customizer
+	 * are left alone.
 	 *
 	 * @param WP_Block_Editor_Context|mixed $block_editor_context Current editor context.
 	 *
 	 * @return string[]
 	 */
 	private function denied_blocks( $block_editor_context ): array {
-		$post = $block_editor_context instanceof WP_Block_Editor_Context ? $block_editor_context->post : null;
-
-		if ( $post && ! empty( $post->post_type ) ) {
-			return $this->store->hidden_in( $post->post_type );
+		if ( ! $block_editor_context instanceof WP_Block_Editor_Context || 'core/edit-post' !== $block_editor_context->name ) {
+			return array();
 		}
 
-		return $this->store->hidden_everywhere();
+		$post = $block_editor_context->post;
+
+		if ( ! $post || empty( $post->post_type ) ) {
+			return array();
+		}
+
+		return $this->store->hidden_in( $post->post_type );
 	}
 
 	/**
