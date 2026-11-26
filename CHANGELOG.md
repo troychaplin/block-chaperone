@@ -18,12 +18,12 @@ Prefix the change with one of these keywords:
 
 ### Added
 
--   Settings → BlockPolicy screen: a DataViews table of every top-level block, with search, status / category / source filters and bulk actions.
+-   Settings → Block Chaperone screen: a DataViews table of every top-level block, with search, status / category / source filters and bulk actions.
 -   Per-block "Hide from inserter" and "Unregister" options.
 -   Per-block Post types and Roles options to limit those restrictions to selected post types and user roles (all by default).
 -   `allowed_block_types_all` enforcement that keeps children of allowed parents and respects lists set by themes or other plugins.
 -   Post editor script that shows unregistered blocks as a removable placeholder in post content, while templates and previews keep rendering them.
 -   Restrictions apply in the post editor only; the Site Editor, widgets editor and Customizer are left alone.
--   `blockpolicy_settings` filter for adding or overriding rules in code.
--   REST routes `blockpolicy/v1/blocks` and `blockpolicy/v1/settings`.
--   Uninstall removes the `blockpolicy_settings` option (all sites on multisite).
+-   `block_chaperone_settings` filter for adding or overriding rules in code.
+-   REST routes `block-chaperone/v1/blocks` and `block-chaperone/v1/settings`.
+-   Uninstall removes the `block_chaperone_settings` option (all sites on multisite).

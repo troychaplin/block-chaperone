@@ -2,15 +2,15 @@
 /**
  * Fired when the plugin is uninstalled. Removes the saved block policy.
  *
- * @package BlockPolicy
+ * @package BlockChaperone
  */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-// Matches BlockPolicy\Policy_Store::OPTION. The autoloader isn't loaded here.
-$blockpolicy_option = 'blockpolicy_settings';
+// Matches BlockChaperone\Policy_Store::OPTION. The autoloader isn't loaded here.
+$block_chaperone_option = 'block_chaperone_settings';
 
 if ( is_multisite() ) {
 	foreach ( get_sites(
@@ -18,11 +18,11 @@ if ( is_multisite() ) {
 			'fields' => 'ids',
 			'number' => 0,
 		)
-	) as $blockpolicy_site_id ) {
-		switch_to_blog( $blockpolicy_site_id );
-		delete_option( $blockpolicy_option );
+	) as $block_chaperone_site_id ) {
+		switch_to_blog( $block_chaperone_site_id );
+		delete_option( $block_chaperone_option );
 		restore_current_blog();
 	}
 } else {
-	delete_option( $blockpolicy_option );
+	delete_option( $block_chaperone_option );
 }

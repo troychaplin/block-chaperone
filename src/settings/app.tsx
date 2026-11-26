@@ -1,5 +1,5 @@
 /**
- * BlockPolicy settings app.
+ * Block Chaperone settings app.
  */
 import apiFetch from '@wordpress/api-fetch';
 import { Button, Notice, Spinner } from '@wordpress/components';
@@ -18,8 +18,8 @@ import {
 	rowsToSettings,
 } from './utils/transform';
 
-const BLOCKS_PATH = '/blockpolicy/v1/blocks';
-const SETTINGS_PATH = '/blockpolicy/v1/settings';
+const BLOCKS_PATH = '/block-chaperone/v1/blocks';
+const SETTINGS_PATH = '/block-chaperone/v1/settings';
 
 const DEFAULT_VIEW: View = {
 	type: 'table',
@@ -105,7 +105,7 @@ export function App() {
 			} catch (error) {
 				setNotice({
 					status: 'error',
-					message: errorMessage(error, __('Failed to load blocks.', 'blockpolicy')),
+					message: errorMessage(error, __('Failed to load blocks.', 'block-chaperone')),
 				});
 			} finally {
 				setIsLoading(false);
@@ -159,12 +159,12 @@ export function App() {
 			setSavedKey(policyKey(savedRows, orphanRules));
 			setNotice({
 				status: 'success',
-				message: __('Settings saved.', 'blockpolicy'),
+				message: __('Settings saved.', 'block-chaperone'),
 			});
 		} catch (error) {
 			setNotice({
 				status: 'error',
-				message: errorMessage(error, __('Failed to save settings.', 'blockpolicy')),
+				message: errorMessage(error, __('Failed to save settings.', 'block-chaperone')),
 			});
 		} finally {
 			setIsSaving(false);
@@ -182,35 +182,35 @@ export function App() {
 		return [
 			{
 				id: 'hide',
-				label: __('Hide from inserter', 'blockpolicy'),
+				label: __('Hide from inserter', 'block-chaperone'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && !item.hidden,
 				callback: items => updateRows(ids(items), { hidden: true }),
 			},
 			{
 				id: 'show',
-				label: __('Show in inserter', 'blockpolicy'),
+				label: __('Show in inserter', 'block-chaperone'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && item.hidden && !item.unregistered,
 				callback: items => updateRows(ids(items), { hidden: false }),
 			},
 			{
 				id: 'unregister',
-				label: __('Unregister', 'blockpolicy'),
+				label: __('Unregister', 'block-chaperone'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && !item.unregistered,
 				callback: items => updateRows(ids(items), { unregistered: true }),
 			},
 			{
 				id: 'register',
-				label: __('Re-register', 'blockpolicy'),
+				label: __('Re-register', 'block-chaperone'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && item.unregistered,
 				callback: items => updateRows(ids(items), { unregistered: false }),
 			},
 			{
 				id: 'reset',
-				label: __('Reset to default', 'blockpolicy'),
+				label: __('Reset to default', 'block-chaperone'),
 				supportsBulk: true,
 				isEligible: item => !item.protected && item.status !== 'allowed',
 				callback: items =>
@@ -233,28 +233,33 @@ export function App() {
 
 	if (isLoading) {
 		return (
-			<div className="blockpolicy-page blockpolicy-page--loading">
+			<div className="block-chaperone-page block-chaperone-page--loading">
 				<Spinner />
-				<span className="screen-reader-text">{__('Loading blocks…', 'blockpolicy')}</span>
+				<span className="screen-reader-text">
+					{__('Loading blocks…', 'block-chaperone')}
+				</span>
 			</div>
 		);
 	}
 
 	return (
-		<div className="blockpolicy-page">
-			<div className="blockpolicy-page__header">
+		<div className="block-chaperone-page">
+			<div className="block-chaperone-page__header">
 				<div>
 					<h1>
-						{__('BlockPolicy — Restrict Blocks by Role & Post Type', 'blockpolicy')}
+						{__(
+							'Block Chaperone — Restrict Blocks by Role & Post Type',
+							'block-chaperone'
+						)}
 					</h1>
-					<p className="blockpolicy-page__summary">
+					<p className="block-chaperone-page__summary">
 						{sprintf(
 							/* translators: 1: number of blocks with a policy, 2: total blocks. */
 							_n(
 								'%1$d of %2$d block has a policy.',
 								'%1$d of %2$d blocks have a policy.',
 								rows.length,
-								'blockpolicy'
+								'block-chaperone'
 							),
 							changedCount,
 							rows.length
@@ -269,7 +274,7 @@ export function App() {
 					disabled={!isDirty || isSaving}
 					accessibleWhenDisabled
 				>
-					{__('Save Changes', 'blockpolicy')}
+					{__('Save Changes', 'block-chaperone')}
 				</Button>
 			</div>
 
@@ -281,7 +286,7 @@ export function App() {
 
 			{rows.length === 0 ? (
 				<Notice status="warning" isDismissible={false}>
-					{__('No blocks found.', 'blockpolicy')}
+					{__('No blocks found.', 'block-chaperone')}
 				</Notice>
 			) : (
 				<DataViews

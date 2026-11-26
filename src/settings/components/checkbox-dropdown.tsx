@@ -100,7 +100,7 @@ export function CheckboxDropdown({
 
 	return (
 		<Dropdown
-			className="blockpolicy-checkbox-dropdown"
+			className="block-chaperone-checkbox-dropdown"
 			popoverProps={{ placement: 'bottom-start' }}
 			renderToggle={({ isOpen, onToggle }) => (
 				<Button
@@ -117,7 +117,7 @@ export function CheckboxDropdown({
 				</Button>
 			)}
 			renderContent={() => (
-				<fieldset className="blockpolicy-checkbox-dropdown__content">
+				<fieldset className="block-chaperone-checkbox-dropdown__content">
 					<legend>{legend}</legend>
 					{options.map(option => (
 						<CheckboxControl
@@ -129,7 +129,7 @@ export function CheckboxDropdown({
 						/>
 					))}
 					{unknown.length > 0 && (
-						<p className="blockpolicy-checkbox-dropdown__note">
+						<p className="block-chaperone-checkbox-dropdown__note">
 							{unknownNote(unknown.join(', '))}
 						</p>
 					)}

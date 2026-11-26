@@ -2,10 +2,10 @@
 /**
  * Asset enqueue logic.
  *
- * @package BlockPolicy
+ * @package BlockChaperone
  */
 
-namespace BlockPolicy;
+namespace BlockChaperone;
 
 /**
  * Enqueues the editor script and the settings page app.
@@ -73,8 +73,8 @@ class Enqueues {
 		}
 
 		wp_add_inline_script(
-			'blockpolicy-editor',
-			'window.blockPolicy = ' . wp_json_encode( array( 'unregistered' => $unregistered ) ) . ';',
+			'block-chaperone-editor',
+			'window.blockChaperone = ' . wp_json_encode( array( 'unregistered' => $unregistered ) ) . ';',
 			'before'
 		);
 	}
@@ -118,7 +118,7 @@ class Enqueues {
 			return false;
 		}
 
-		$handle = 'blockpolicy-' . $entry;
+		$handle = 'block-chaperone-' . $entry;
 
 		wp_enqueue_script(
 			$handle,
@@ -128,7 +128,7 @@ class Enqueues {
 			true
 		);
 
-		wp_set_script_translations( $handle, 'blockpolicy' );
+		wp_set_script_translations( $handle, 'block-chaperone' );
 
 		if ( file_exists( $this->build_dir->get_path( $entry . '.css' ) ) ) {
 			wp_enqueue_style(

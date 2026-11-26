@@ -19,7 +19,7 @@ interface PolicyToggleProps {
  */
 export function PolicyToggle({ label, checked, disabled = false, onChange }: PolicyToggleProps) {
 	return (
-		<div className="blockpolicy-toggle-cell">
+		<div className="block-chaperone-toggle-cell">
 			<ToggleControl
 				__nextHasNoMarginBottom
 				label={<VisuallyHidden>{label}</VisuallyHidden>}

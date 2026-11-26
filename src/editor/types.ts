@@ -1,5 +1,5 @@
 /**
- * Data printed by `BlockPolicy\Enqueues` as `window.blockPolicy`.
+ * Data printed by `BlockChaperone\Enqueues` as `window.blockChaperone`.
  */
 export interface EditorPolicyData {
 	/** Blocks unavailable in post content on this post editor screen. */
@@ -8,6 +8,6 @@ export interface EditorPolicyData {
 
 declare global {
 	interface Window {
-		blockPolicy?: EditorPolicyData;
+		blockChaperone?: EditorPolicyData;
 	}
 }

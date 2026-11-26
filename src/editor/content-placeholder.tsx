@@ -89,7 +89,7 @@ function ContentPlaceholder({ name, clientId }: { name: string; clientId: string
 						variant="primary"
 						onClick={() => removeBlock(clientId)}
 					>
-						{__('Remove block', 'blockpolicy')}
+						{__('Remove block', 'block-chaperone')}
 					</Button>,
 				]}
 			>
@@ -97,7 +97,7 @@ function ContentPlaceholder({ name, clientId }: { name: string; clientId: string
 					/* translators: %s: block title. */
 					__(
 						'The %s block isn’t available here. It will keep displaying on your site, but it can’t be edited.',
-						'blockpolicy'
+						'block-chaperone'
 					),
 					title
 				)}
@@ -133,7 +133,7 @@ export function registerContentPlaceholder(names: string[]) {
 
 	addFilter(
 		'editor.BlockEdit',
-		'blockpolicy/content-placeholder',
+		'block-chaperone/content-placeholder',
 		createHigherOrderComponent(
 			(BlockEdit: ComponentType<BlockEditProps>) => (props: BlockEditProps) =>
 				listed.has(props.name) ? (
@@ -141,7 +141,7 @@ export function registerContentPlaceholder(names: string[]) {
 				) : (
 					<BlockEdit {...props} />
 				),
-			'withBlockPolicyContentPlaceholder'
+			'withBlockChaperoneContentPlaceholder'
 		)
 	);
 }

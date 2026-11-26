@@ -27,24 +27,24 @@ export function RoleSelect({ blockTitle, ...props }: RoleSelectProps) {
 			{...props}
 			label={sprintf(
 				/* translators: %s: block title. */
-				__('Roles restricted from %s', 'blockpolicy'),
+				__('Roles restricted from %s', 'block-chaperone'),
 				blockTitle
 			)}
-			legend={__('Apply restrictions to', 'blockpolicy')}
-			emptyLabel={__('All roles', 'blockpolicy')}
+			legend={__('Apply restrictions to', 'block-chaperone')}
+			emptyLabel={__('All roles', 'block-chaperone')}
 			// Role names are long; list one, then switch to a count.
 			maxNames={1}
 			countLabel={count =>
 				sprintf(
 					/* translators: %d: number of roles. */
-					_n('%d role', '%d roles', count, 'blockpolicy'),
+					_n('%d role', '%d roles', count, 'block-chaperone'),
 					count
 				)
 			}
 			unknownNote={slugs =>
 				sprintf(
 					/* translators: %s: comma-separated role slugs. */
-					__('Also saved for roles that no longer exist: %s', 'blockpolicy'),
+					__('Also saved for roles that no longer exist: %s', 'block-chaperone'),
 					slugs
 				)
 			}

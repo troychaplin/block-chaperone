@@ -1,6 +1,6 @@
 {
-	"name": "troychaplin/blockpolicy",
-	"description": "BlockPolicy – Restrict Blocks by Role & Post Type.",
+	"name": "troychaplin/block-chaperone",
+	"description": "Block Chaperone – Restrict Blocks by Role & Post Type.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
 	"autoload": {

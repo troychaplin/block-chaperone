@@ -1,10 +1,10 @@
 <img src="assets/icon-256x256.png" alt="Representation of content types with icons in square buttons" style="float: left; margin-right: 1.5em; height: auto; width: 128px;">
 
-# BlockPolicy – Restrict Blocks by Role & Post Type
+# Block Chaperone – Restrict Blocks by Role & Post Type
 
 Control which blocks are available in the WordPress block editor, block by block, from one settings screen.
 
-Go to **Settings → BlockPolicy** to see every top-level block registered on the site. For each one you can:
+Go to **Settings → Block Chaperone** to see every top-level block registered on the site. For each one you can:
 
 | Option | What it does |
 |--------|--------------|
@@ -30,12 +30,12 @@ The table can be searched and filtered by **status**, **category** and **source*
 
 ## Developer reference
 
-### Filter: `blockpolicy_settings`
+### Filter: `block_chaperone_settings`
 
 Add to or override the enforced policy in code. The result is sanitized with the same rules as saved settings.
 
 ```php
-add_filter( 'blockpolicy_settings', function ( array $policy ): array {
+add_filter( 'block_chaperone_settings', function ( array $policy ): array {
 	// Always unregister the Verse block.
 	$policy['blocks']['core/verse'] = array( 'unregistered' => true );
 
@@ -59,7 +59,7 @@ The settings page shows and saves only the stored policy. Rules added by this fi
 
 ### Stored option
 
-`blockpolicy_settings` (autoloaded):
+`block_chaperone_settings` (autoloaded):
 
 ```json
 {
@@ -78,9 +78,9 @@ All routes require the `manage_options` capability.
 
 | Route | Method | Returns |
 |-------|--------|---------|
-| `/wp-json/blockpolicy/v1/blocks` | GET | `{ blocks, postTypes, roles }`: the top-level block catalog, and the post types and user roles a block's restrictions can be limited to. |
-| `/wp-json/blockpolicy/v1/settings` | GET | The stored policy. |
-| `/wp-json/blockpolicy/v1/settings` | POST | Replaces the stored policy and returns the sanitized result. |
+| `/wp-json/block-chaperone/v1/blocks` | GET | `{ blocks, postTypes, roles }`: the top-level block catalog, and the post types and user roles a block's restrictions can be limited to. |
+| `/wp-json/block-chaperone/v1/settings` | GET | The stored policy. |
+| `/wp-json/block-chaperone/v1/settings` | POST | Replaces the stored policy and returns the sanitized result. |
 
 ## Known limitations
 
@@ -105,13 +105,13 @@ Local environment via [@wordpress/env](https://github.com/WordPress/gutenberg/tr
 
 | Path | Purpose |
 |------|---------|
-| `blockpolicy.php` | Plugin header and bootstrap |
+| `plugin.php` | Plugin header and bootstrap |
 | `classes/class-plugin.php` | Creates and wires up the modules |
 | `classes/class-block-catalog.php` | Top-level block list, sources, categories, post types |
-| `classes/class-policy-store.php` | Reads, sanitizes and saves the option; `blockpolicy_settings` filter |
+| `classes/class-policy-store.php` | Reads, sanitizes and saves the option; `block_chaperone_settings` filter |
 | `classes/class-rest-controller.php` | REST routes for the settings page |
 | `classes/class-allowed-blocks.php` | `allowed_block_types_all` enforcement |
 | `classes/class-enqueues.php` | Editor and settings scripts |
-| `classes/class-settings-page.php` | Settings → BlockPolicy screen |
+| `classes/class-settings-page.php` | Settings → Block Chaperone screen |
 | `src/editor/` | Post editor script that shows unregistered blocks as a placeholder in post content |
 | `src/settings/` | DataViews settings app (TypeScript) |

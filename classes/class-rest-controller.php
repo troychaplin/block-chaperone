@@ -2,10 +2,10 @@
 /**
  * REST API for the settings page.
  *
- * @package BlockPolicy
+ * @package BlockChaperone
  */
 
-namespace BlockPolicy;
+namespace BlockChaperone;
 
 use WP_Error;
 use WP_REST_Request;
@@ -15,16 +15,16 @@ use WP_REST_Server;
 /**
  * Routes:
  *
- * - GET  /blockpolicy/v1/blocks    Block catalog, editor post types and user roles.
- * - GET  /blockpolicy/v1/settings  Saved policy.
- * - POST /blockpolicy/v1/settings  Replace the saved policy; returns the sanitized result.
+ * - GET  /block-chaperone/v1/blocks    Block catalog, editor post types and user roles.
+ * - GET  /block-chaperone/v1/settings  Saved policy.
+ * - POST /block-chaperone/v1/settings  Replace the saved policy; returns the sanitized result.
  */
 class Rest_Controller {
 
 	/**
 	 * REST namespace.
 	 */
-	public const REST_NAMESPACE = 'blockpolicy/v1';
+	public const REST_NAMESPACE = 'block-chaperone/v1';
 
 	/**
 	 * Block catalog.
@@ -102,7 +102,7 @@ class Rest_Controller {
 
 		return new WP_Error(
 			'rest_forbidden',
-			__( 'You do not have permission to manage block policies.', 'blockpolicy' ),
+			__( 'You do not have permission to manage block policies.', 'block-chaperone' ),
 			array( 'status' => rest_authorization_required_code() )
 		);
 	}
@@ -143,8 +143,8 @@ class Rest_Controller {
 
 		if ( ! is_array( $policy ) ) {
 			return new WP_Error(
-				'blockpolicy_invalid_settings',
-				__( 'Settings must be a JSON object.', 'blockpolicy' ),
+				'block_chaperone_invalid_settings',
+				__( 'Settings must be a JSON object.', 'block-chaperone' ),
 				array( 'status' => 400 )
 			);
 		}

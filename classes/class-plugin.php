@@ -2,10 +2,10 @@
 /**
  * Plugin bootstrap.
  *
- * @package BlockPolicy
+ * @package BlockChaperone
  */
 
-namespace BlockPolicy;
+namespace BlockChaperone;
 
 /**
  * Wires up the plugin's modules.

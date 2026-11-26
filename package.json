@@ -1,7 +1,7 @@
 {
-	"name": "blockpolicy",
+	"name": "block-chaperone",
 	"version": "0.1.0",
-	"description": "BlockPolicy – Restrict Blocks by Role & Post Type.",
+	"description": "Block Chaperone – Restrict Blocks by Role & Post Type.",
 	"author": "Troy Chaplin",
 	"license": "GPL-2.0-or-later",
 	"scripts": {

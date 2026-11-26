@@ -1,11 +1,11 @@
 /**
  * Shapes shared by the settings app. These mirror the REST responses from
- * `BlockPolicy\Rest_Controller`.
+ * `BlockChaperone\Rest_Controller`.
  */
 
 export type SourceType = 'core' | 'plugin' | 'theme' | 'unknown';
 
-/** One top-level block, from GET /blockpolicy/v1/blocks. */
+/** One top-level block, from GET /block-chaperone/v1/blocks. */
 export interface CatalogBlock {
 	name: string;
 	title: string;
@@ -24,7 +24,7 @@ export interface SlugOption {
 	label: string;
 }
 
-/** GET /blockpolicy/v1/blocks. */
+/** GET /block-chaperone/v1/blocks. */
 export interface Catalog {
 	blocks: CatalogBlock[];
 	postTypes: SlugOption[];
@@ -43,7 +43,7 @@ export interface BlockRule {
 	roles?: string[];
 }
 
-/** GET/POST /blockpolicy/v1/settings. */
+/** GET/POST /block-chaperone/v1/settings. */
 export interface PolicySettings {
 	blocks: Record<string, BlockRule>;
 }

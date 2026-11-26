@@ -1,4 +1,4 @@
-=== BlockPolicy – Restrict Blocks by Role & Post Type ===
+=== Block Chaperone – Restrict Blocks by Role & Post Type ===
 
 Contributors: areziaal
 Tags: blocks, gutenberg, block editor, allowed blocks, inserter
@@ -13,7 +13,7 @@ Control which blocks are available in the editor, block by block: hide them, unr
 
 == Description ==
 
-BlockPolicy adds a settings screen that lists every top-level block on your site — core blocks and blocks from plugins and themes — with these options per block:
+Block Chaperone adds a settings screen that lists every top-level block on your site — core blocks and blocks from plugins and themes — with these options per block:
 
 * **Hide from inserter** — the block can't be added, but existing content keeps working.
 * **Unregister** — the block can't be used in post content: it's hidden, and existing instances show a placeholder you can remove. Templates that use the block keep working.
@@ -28,17 +28,17 @@ Search the list, filter it by status, category or source plugin, and change many
 * New blocks from newly activated plugins are allowed by default. Only the blocks you change are stored.
 * Restrictions apply in the post editor only; the Site Editor is left alone.
 * The Paragraph block is protected, because the editor depends on it.
-* If your theme or another plugin already limits the available blocks, BlockPolicy only removes from that list. It never adds blocks back.
+* If your theme or another plugin already limits the available blocks, Block Chaperone only removes from that list. It never adds blocks back.
 
 = For developers =
 
-Use the `blockpolicy_settings` filter to add or override rules in code. A REST API at `blockpolicy/v1` powers the settings screen. See the README on GitHub for details.
+Use the `block_chaperone_settings` filter to add or override rules in code. A REST API at `block-chaperone/v1` powers the settings screen. See the README on GitHub for details.
 
 == Installation ==
 
 1. Upload the plugin to `/wp-content/plugins/` or install it from the Plugins screen.
 2. Activate it.
-3. Go to Settings → BlockPolicy.
+3. Go to Settings → Block Chaperone.
 
 == Frequently Asked Questions ==
 
@@ -61,4 +61,4 @@ Only top-level blocks that can be inserted are listed. Blocks registered only in
 == Changelog ==
 
 = 0.1.0 =
-* Initial release: settings screen with per-block hide, unregister, post type and role restrictions; category, source and status filters; bulk actions; `blockpolicy_settings` filter.
+* Initial release: settings screen with per-block hide, unregister, post type and role restrictions; category, source and status filters; bulk actions; `block_chaperone_settings` filter.

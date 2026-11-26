@@ -2,10 +2,10 @@
 /**
  * Server-side enforcement of the block policy.
  *
- * @package BlockPolicy
+ * @package BlockChaperone
  */
 
-namespace BlockPolicy;
+namespace BlockChaperone;
 
 use WP_Block_Editor_Context;
 use WP_Block_Type_Registry;

@@ -2,10 +2,10 @@
 /**
  * Admin settings page.
  *
- * @package BlockPolicy
+ * @package BlockChaperone
  */
 
-namespace BlockPolicy;
+namespace BlockChaperone;
 
 /**
  * Registers the settings screen. The page renders an empty root that the
@@ -16,7 +16,7 @@ class Settings_Page {
 	/**
 	 * Menu / page slug.
 	 */
-	public const SLUG = 'blockpolicy';
+	public const SLUG = 'block-chaperone';
 
 	/**
 	 * Capability required to view the page.
@@ -42,8 +42,8 @@ class Settings_Page {
 	 */
 	public function register_page(): void {
 		$hook_suffix = add_options_page(
-			__( 'BlockPolicy', 'blockpolicy' ),
-			__( 'BlockPolicy', 'blockpolicy' ),
+			__( 'Block Chaperone', 'block-chaperone' ),
+			__( 'Block Chaperone', 'block-chaperone' ),
 			self::CAPABILITY,
 			self::SLUG,
 			array( $this, 'render_page' )
@@ -71,7 +71,7 @@ class Settings_Page {
 	 */
 	public function render_page(): void {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
-			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'blockpolicy' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'block-chaperone' ) );
 		}
 
 		?>
@@ -88,12 +88,12 @@ class Settings_Page {
 		<?php
 		// Anchor for admin notices, so they aren't injected inside the React root.
 		echo '<hr class="wp-header-end">';
-		echo '<div id="blockpolicy-settings-root"></div>';
+		echo '<div id="block-chaperone-settings-root"></div>';
 		?>
 		<noscript>
 			<div class="wrap">
 				<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-				<p><?php esc_html_e( 'BlockPolicy settings require JavaScript.', 'blockpolicy' ); ?></p>
+				<p><?php esc_html_e( 'Block Chaperone settings require JavaScript.', 'block-chaperone' ); ?></p>
 			</div>
 		</noscript>
 		<?php
