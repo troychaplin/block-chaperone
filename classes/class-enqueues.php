@@ -101,6 +101,26 @@ class Enqueues {
 		}
 
 		$this->enqueue_entry( 'settings', array( 'wp-components' ) );
+
+		// Admin chrome overrides for the full-bleed page. Printed in <head> with
+		// the settings stylesheet, so they apply on first paint (no snap from the
+		// default admin width to full bleed). Scoped to `body.js` so a browser
+		// without JavaScript keeps the normal admin layout.
+		$handle = 'block-chaperone-settings';
+		if ( ! wp_style_is( $handle, 'enqueued' ) ) {
+			// No built stylesheet: attach the CSS to a source-less handle instead.
+			wp_register_style( $handle, false, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- No file to version.
+			wp_enqueue_style( $handle );
+		}
+
+		wp_add_inline_style(
+			$handle,
+			'#wpwrap { overflow-y: auto; }'
+			. 'body.js #wpcontent { padding-inline-start: 0; }'
+			. 'body.js #wpbody-content { padding-bottom: 0; }'
+			. 'body.js #wpfooter { display: none; }'
+			. '@media (min-width: 782px) { #wpwrap { overflow-y: initial; } }'
+		);
 	}
 
 	/**

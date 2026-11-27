@@ -65,27 +65,14 @@ class Settings_Page {
 	 * Output the mount point for the settings app.
 	 *
 	 * The React app draws its own page chrome edge to edge, so the usual `.wrap`
-	 * container is omitted. The admin chrome overrides are inlined so they apply
-	 * on first paint (no snap from default width to full bleed), and scoped to
-	 * `body.js` so a browser without JavaScript keeps the normal admin layout.
+	 * container is omitted. The admin chrome overrides that make this work are
+	 * added in Enqueues::enqueue_settings_assets() with wp_add_inline_style().
 	 */
 	public function render_page(): void {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'block-chaperone' ) );
 		}
 
-		?>
-		<style>
-			#wpwrap { overflow-y: auto; }
-			body.js #wpcontent { padding-inline-start: 0; }
-			body.js #wpbody-content { padding-bottom: 0; }
-			body.js #wpfooter { display: none; }
-
-			@media (min-width: 782px) {
-				#wpwrap { overflow-y: initial; }
-			}
-		</style>
-		<?php
 		// Anchor for admin notices, so they aren't injected inside the React root.
 		echo '<hr class="wp-header-end">';
 		echo '<div id="block-chaperone-settings-root"></div>';
